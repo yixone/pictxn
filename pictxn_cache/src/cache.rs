@@ -21,10 +21,6 @@ impl<K, V> CacheInner<K, V> {
         todo!()
     }
 
-    pub fn touch(&self, key: K) -> bool {
-        todo!()
-    }
-
     pub fn remove(&self, key: K) -> Option<V> {
         todo!()
     }
