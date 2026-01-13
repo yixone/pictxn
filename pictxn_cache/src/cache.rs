@@ -28,5 +28,33 @@ impl<K, V> CacheInner<K, V> {
 
 #[cfg(test)]
 mod tests {
-    //
+    #[cfg(test)]
+    fn set_and_get_value_by_key() {
+        //
+    }
+
+    #[cfg(test)]
+    fn overvrite_value_by_key() {
+        //
+    }
+
+    #[cfg(test)]
+    fn set_ex_and_get_value_by_key() {
+        //
+    }
+
+    #[cfg(test)]
+    fn return_none_for_not_existed_value() {
+        //
+    }
+
+    #[cfg(test)]
+    fn return_none_for_not_expired_value() {
+        //
+    }
+
+    #[cfg(test)]
+    fn remove_value_by_key() {
+        //
+    }
 }
