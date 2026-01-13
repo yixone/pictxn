@@ -1,14 +1,20 @@
 use std::{
     collections::HashMap,
+    hash::Hash,
     sync::{Arc, RwLock},
-    time::Duration,
+    time::{Duration, Instant},
 };
 
+use crate::item::{CacheExpiration, CacheItem};
+
 pub(super) struct CacheInner<K, V> {
-    map: RwLock<HashMap<K, Arc<V>>>,
+    map: RwLock<HashMap<K, CacheItem<V>>>,
 }
 
-impl<K, V> CacheInner<K, V> {
+impl<K, V> CacheInner<K, V>
+where
+    K: Eq + Hash,
+{
     pub(super) fn new() -> Self {
         let map = HashMap::new();
         let locked_map = RwLock::new(map);
@@ -17,19 +23,50 @@ impl<K, V> CacheInner<K, V> {
     }
 
     pub(super) fn get(&self, key: K) -> Option<Arc<V>> {
-        todo!()
+        let lock = self.map.read().unwrap();
+
+        let value = lock.get(&key)?;
+        match value.expired() {
+            CacheExpiration::Never => Some(value.value()),
+            CacheExpiration::At(i) => {
+                if &Instant::now() > i {
+                    drop(lock);
+                    self.remove(key);
+                    None
+                } else {
+                    Some(value.value())
+                }
+            }
+        }
     }
 
-    pub(super) fn set(&self, key: K, value: V) -> Option<Arc<V>> {
-        todo!()
+    pub(super) fn set(&self, key: K, value: V) {
+        let value = CacheItem::new(value, CacheExpiration::Never);
+
+        {
+            let mut write_lock = self.map.write().unwrap();
+
+            write_lock.insert(key, value);
+        }
     }
 
-    pub(super) fn set_ex(&self, key: K, value: V, lifetime: Duration) -> Option<V> {
-        todo!()
+    pub(super) fn set_ex(&self, key: K, value: V, lifetime: Duration) {
+        let expired = CacheExpiration::At(Instant::now() + lifetime);
+        let value = CacheItem::new(value, expired);
+
+        {
+            let mut write_lock = self.map.write().unwrap();
+
+            write_lock.insert(key, value);
+        }
     }
 
-    pub(super) fn remove(&self, key: K) -> Option<V> {
-        todo!()
+    pub(super) fn remove(&self, key: K) {
+        {
+            let mut write_lock = self.map.write().unwrap();
+
+            write_lock.remove(&key);
+        }
     }
 }
 

@@ -11,8 +11,16 @@ pub struct CacheItem<T> {
 }
 
 impl<T> CacheItem<T> {
-    pub fn value(&self) -> &T {
-        &self.value
+    pub fn new(value: T, expired: CacheExpiration) -> Self {
+        let value_arc = Arc::new(value);
+        CacheItem {
+            value: value_arc,
+            expired,
+        }
+    }
+
+    pub fn value(&self) -> Arc<T> {
+        self.value.clone()
     }
 
     pub fn expired(&self) -> &CacheExpiration {
