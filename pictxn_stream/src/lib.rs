@@ -50,7 +50,10 @@ where
     {
         while let Some(chunk_res) = tokio::select! {
             chunk = stream.next() => chunk,
-            _ = cancel.cancelled() => return Err(StreamError::Cancelled.into())
+            _ = cancel.cancelled() => {
+                quiet_delete_file(path).await;
+                return Err(StreamError::Cancelled.into())
+            }
         } {
             let chunk = chunk_res?;
             let chunk_ref = chunk.as_ref();
