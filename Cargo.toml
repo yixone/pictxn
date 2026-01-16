@@ -7,3 +7,10 @@ edition = "2024"
 repository = "https://github.com/yixone/pictxn"
 
 [workspace.dependencies]
+tokio = "1.47.1"
+tokio-util = "0.7.16"
+
+sha2 = "0.10.9"
+hex = "0.4.3"
+
+tracing = "0.1.40"

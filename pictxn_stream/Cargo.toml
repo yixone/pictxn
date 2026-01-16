@@ -5,3 +5,16 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
+futures = "0.3.31"
+tokio = { workspace = true, features = [
+  "rt-multi-thread",
+  "macros",
+  "fs",
+  "io-util",
+] }
+tokio-util = { workspace = true, features = ["io"] }
+
+sha2 = { workspace = true }
+
+tracing = { workspace = true }
+hex = { workspace = true }
