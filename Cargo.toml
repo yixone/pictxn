@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["apps/core"]
+members = ["apps/pictxn"]
 
 [workspace.package]
 edition = "2024"

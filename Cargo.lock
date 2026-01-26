@@ -136,23 +136,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
 
 [[package]]
-name = "core"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "chrono",
- "futures",
- "hex",
- "sha2",
- "sqlx",
- "tempfile",
- "tokio",
- "tokio-util",
- "tracing",
- "uuid",
-]
-
-[[package]]
 name = "core-foundation-sys"
 version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -874,6 +857,23 @@ name = "percent-encoding"
 version = "2.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b4f627cb1b25917193a259e49bdad08f671f8d9708acfd5fe0a8c1455d87220"
+
+[[package]]
+name = "pictxn"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "futures",
+ "hex",
+ "sha2",
+ "sqlx",
+ "tempfile",
+ "tokio",
+ "tokio-util",
+ "tracing",
+ "uuid",
+]
 
 [[package]]
 name = "pin-project-lite"
