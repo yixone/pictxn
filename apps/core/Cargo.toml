@@ -5,3 +5,29 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
+async-trait = { workspace = true }
+tokio = { workspace = true, features = [
+  "rt-multi-thread",
+  "macros",
+  "fs",
+  "io-util",
+] }
+tokio-util = { workspace = true, features = ["io"] }
+futures = { workspace = true }
+
+sqlx = { workspace = true, features = [
+  "runtime-tokio",
+  "sqlite",
+  "chrono",
+  "uuid",
+] }
+
+sha2 = { workspace = true }
+hex = { workspace = true }
+uuid = { workspace = true, features = ["v4"] }
+chrono = { workspace = true }
+
+tracing = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
