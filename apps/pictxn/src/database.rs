@@ -43,4 +43,8 @@ impl Database {
             .await
             .map_err(sqlx::Error::from)
     }
+
+    pub async fn close(self) {
+        self.pool.close().await
+    }
 }
