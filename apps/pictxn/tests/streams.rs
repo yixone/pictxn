@@ -17,7 +17,7 @@ async fn write_in_buff() {
     let (buff, sha256) = prepare_buffer_and_hash(64);
     let input_stream = Box::pin(ReaderStream::new(&buff[..]));
 
-    let res = pictxn::helpers::streams::write_in_buff(input_stream, 256)
+    let res = pictxn::streams::write_in_buff(input_stream, 256)
         .await
         .expect("failed to write stream in buffer");
 
@@ -33,7 +33,7 @@ async fn return_error_if_write_in_buff_limit_exceeded() {
     let (buff, ..) = prepare_buffer_and_hash(128);
     let input_stream = Box::pin(ReaderStream::new(&buff[..]));
 
-    let res = pictxn::helpers::streams::write_in_buff(input_stream, 64).await;
+    let res = pictxn::streams::write_in_buff(input_stream, 64).await;
     assert!(
         res.is_err(),
         "If the stream size is exceeded, an error should be returned"
@@ -47,7 +47,7 @@ async fn write_in_str() {
     let string = b"qwerty";
     let input_stream = Box::pin(ReaderStream::new(&string[..]));
 
-    let res = pictxn::helpers::streams::write_in_str(input_stream, 256)
+    let res = pictxn::streams::write_in_str(input_stream, 256)
         .await
         .expect("failed to write stream in string");
 
@@ -59,7 +59,7 @@ async fn return_error_if_write_in_str_limit_exceeded() {
     let string = b"hello, world!";
     let input_stream = Box::pin(ReaderStream::new(&string[..]));
 
-    let res = pictxn::helpers::streams::write_in_str(input_stream, 8).await;
+    let res = pictxn::streams::write_in_str(input_stream, 8).await;
 
     assert!(
         res.is_err(),
@@ -72,7 +72,7 @@ async fn return_error_if_write_in_str_input_is_not_utf8() {
     let string = [0xFF, 0xFF];
     let input_stream = Box::pin(ReaderStream::new(&string[..]));
 
-    let res = pictxn::helpers::streams::write_in_str(input_stream, 8).await;
+    let res = pictxn::streams::write_in_str(input_stream, 8).await;
 
     assert!(
         res.is_err(),

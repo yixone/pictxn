@@ -1,4 +1,4 @@
-pub mod helpers;
+pub mod streams;
 
 pub(crate) const MEGABYTES: usize = 1024 * 1024;
 
