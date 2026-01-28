@@ -1,5 +1,6 @@
 pub mod database;
 pub mod helpers;
+pub mod storage;
 pub mod streams;
 pub mod types;
 
