@@ -5,24 +5,13 @@ use sha2::{Digest, Sha256};
 use tokio::{fs::File, io::AsyncWriteExt};
 use tokio_util::{bytes::Bytes, io::ReaderStream};
 
-pub struct WriteInFileResult {
-    pub size: usize,
-    pub sha256: String,
-}
-pub struct WriteInBuffResult {
-    pub buff: Vec<u8>,
-    pub sha256: String,
-}
-pub struct WriteInStrResult {
-    pub string: String,
-    pub sha256: String,
-}
+use crate::types::files::{FileWriteResult, Sha256Hash};
 
 pub async fn write_in_file<P>(
     path: P,
     mut stream: BoxStream<'_, std::io::Result<Bytes>>,
     limit: usize,
-) -> std::io::Result<WriteInFileResult>
+) -> std::io::Result<FileWriteResult>
 where
     P: AsRef<Path>,
 {
@@ -46,15 +35,17 @@ where
             file.write_all(&chunk).await?;
         }
     }
-    let sha256 = hex::encode(hasher.finalize());
 
-    Ok(WriteInFileResult { size, sha256 })
+    Ok(FileWriteResult {
+        size,
+        sha256: Sha256Hash::from_hasher(hasher),
+    })
 }
 
 pub async fn write_in_buff(
     mut stream: BoxStream<'_, std::io::Result<Bytes>>,
     limit: usize,
-) -> std::io::Result<WriteInBuffResult> {
+) -> std::io::Result<Bytes> {
     let mut size = 0;
     let mut hasher = Sha256::new();
 
@@ -75,23 +66,19 @@ pub async fn write_in_buff(
             buff.extend_from_slice(&chunk);
         }
     }
-    let sha256 = hex::encode(hasher.finalize());
 
-    Ok(WriteInBuffResult { buff, sha256 })
+    Ok(Bytes::from_owner(buff))
 }
 
 pub async fn write_in_str(
     stream: BoxStream<'_, std::io::Result<Bytes>>,
     limit: usize,
-) -> std::io::Result<WriteInStrResult> {
+) -> std::io::Result<String> {
     let res = write_in_buff(stream, limit).await?;
-    let string = String::from_utf8(res.buff)
+    let string = String::from_utf8(res.to_vec())
         .map_err(|_| std::io::Error::new(std::io::ErrorKind::InvalidData, "invalid utf-8"))?;
 
-    Ok(WriteInStrResult {
-        string,
-        sha256: res.sha256,
-    })
+    Ok(string)
 }
 
 pub async fn read_from_file<P>(
