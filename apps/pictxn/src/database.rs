@@ -12,7 +12,7 @@ pub struct Database {
 impl Database {
     pub async fn open_file(file: impl AsRef<Path>) -> sqlx::Result<Self> {
         let path = file.as_ref();
-        crate::helpers::fs::create_all_parents_if_exists(path).await?;
+        crate::helpers::fs::create_all_parents(path).await?;
 
         let opts = SqliteConnectOptions::new()
             .filename(path)
