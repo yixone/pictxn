@@ -1,6 +1,24 @@
-[package]
-name = "pictxn"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+resolver = "2"
+members = ["apps/pictxn"]
 
-[dependencies]
+[workspace.package]
+edition = "2024"
+repository = "https://github.com/yixone/pictxn"
+
+[workspace.dependencies]
+async-trait = "0.1.89"
+tokio = "1.47.1"
+tokio-util = "0.7.16"
+futures = "0.3.31"
+
+sqlx = "0.8.5"
+
+sha2 = "0.10.9"
+hex = "0.4.3"
+uuid = "1.17.0"
+chrono = "0.4.42"
+
+tracing = "0.1.40"
+
+tempfile = "3.24.0"
