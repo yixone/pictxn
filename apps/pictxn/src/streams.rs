@@ -1,19 +1,20 @@
 use std::path::Path;
 
-use futures::{StreamExt, stream::BoxStream};
+use futures::{Stream, StreamExt};
 use sha2::{Digest, Sha256};
 use tokio::{fs::File, io::AsyncWriteExt};
 use tokio_util::{bytes::Bytes, io::ReaderStream};
 
 use crate::types::files::{FileWriteResult, Sha256Hash};
 
-pub async fn write_in_file<P>(
+pub async fn write_in_file<P, S>(
     path: P,
-    mut stream: BoxStream<'_, std::io::Result<Bytes>>,
+    mut stream: S,
     limit: usize,
 ) -> std::io::Result<FileWriteResult>
 where
     P: AsRef<Path>,
+    S: Stream<Item = std::io::Result<Bytes>> + Unpin,
 {
     let mut size = 0;
     let mut hasher = Sha256::new();
@@ -42,10 +43,10 @@ where
     })
 }
 
-pub async fn write_in_buff(
-    mut stream: BoxStream<'_, std::io::Result<Bytes>>,
-    limit: usize,
-) -> std::io::Result<Bytes> {
+pub async fn write_in_buff<S>(mut stream: S, limit: usize) -> std::io::Result<Bytes>
+where
+    S: Stream<Item = std::io::Result<Bytes>> + Unpin,
+{
     let mut size = 0;
     let mut hasher = Sha256::new();
 
@@ -70,10 +71,10 @@ pub async fn write_in_buff(
     Ok(Bytes::from_owner(buff))
 }
 
-pub async fn write_in_str(
-    stream: BoxStream<'_, std::io::Result<Bytes>>,
-    limit: usize,
-) -> std::io::Result<String> {
+pub async fn write_in_str<S>(stream: S, limit: usize) -> std::io::Result<String>
+where
+    S: Stream<Item = std::io::Result<Bytes>> + Unpin,
+{
     let res = write_in_buff(stream, limit).await?;
     let string = String::from_utf8(res.to_vec())
         .map_err(|_| std::io::Error::new(std::io::ErrorKind::InvalidData, "invalid utf-8"))?;
@@ -83,7 +84,7 @@ pub async fn write_in_str(
 
 pub async fn read_from_file<P>(
     file: P,
-) -> std::io::Result<BoxStream<'static, std::io::Result<Bytes>>>
+) -> std::io::Result<impl Stream<Item = std::io::Result<Bytes>> + Send>
 where
     P: AsRef<Path>,
 {
