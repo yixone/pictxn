@@ -82,14 +82,12 @@ where
     Ok(string)
 }
 
-pub async fn read_from_file<P>(
-    file: P,
-) -> std::io::Result<impl Stream<Item = std::io::Result<Bytes>> + Send>
+pub async fn read_from_file<P>(file: P) -> std::io::Result<ReaderStream<File>>
 where
     P: AsRef<Path>,
 {
     let file = File::open(file.as_ref()).await?;
     let strm = ReaderStream::new(file);
 
-    Ok(Box::pin(strm))
+    Ok(strm)
 }

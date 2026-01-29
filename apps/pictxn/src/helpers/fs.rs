@@ -15,3 +15,9 @@ pub fn create_all_parents_sync(path: &Path) -> std::io::Result<()> {
 
     Ok(())
 }
+
+pub async fn try_delete_file(path: &Path) {
+    if let Err(e) = tokio::fs::remove_file(path).await {
+        tracing::warn!(err = ?e, "Failed to delete file")
+    }
+}
