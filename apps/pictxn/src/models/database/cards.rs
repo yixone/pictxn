@@ -11,16 +11,16 @@ use crate::models::{
 
 #[derive(Debug, FromRow)]
 pub struct CardDb {
-    id: CardId,
-    author_id: UserId,
+    pub id: CardId,
+    pub author_id: UserId,
 
-    created_at: DateTime<Utc>,
+    pub created_at: DateTime<Utc>,
 
-    title: Option<String>,
-    description: Option<String>,
+    pub title: Option<String>,
+    pub description: Option<String>,
 
-    visibility: CardVisibility,
-    deleted_at: Option<DateTime<Utc>>,
+    pub visibility: CardVisibility,
+    pub deleted_at: Option<DateTime<Utc>>,
 }
 
 pub struct CardFilesJoined {
