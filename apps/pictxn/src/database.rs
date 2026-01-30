@@ -23,7 +23,7 @@ impl Database {
         Ok(Database { pool })
     }
 
-    pub async fn open_in_momory() -> sqlx::Result<Self> {
+    pub async fn open_in_memory() -> sqlx::Result<Self> {
         let opts = SqliteConnectOptions::new()
             .in_memory(true)
             .shared_cache(true);
