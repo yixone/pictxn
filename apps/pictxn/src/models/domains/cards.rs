@@ -55,10 +55,7 @@ impl CardDomain {
     }
 
     pub fn is_deleted(&self) -> bool {
-        match self.deleted_at {
-            Some(d) => Utc::now() >= d,
-            None => false,
-        }
+        self.deleted_at.is_some()
     }
 }
 
