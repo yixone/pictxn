@@ -26,6 +26,7 @@ sha2 = { workspace = true }
 hex = { workspace = true }
 uuid = { workspace = true, features = ["v4"] }
 chrono = { workspace = true }
+rand = { workspace = true }
 
 tracing = { workspace = true }
 
