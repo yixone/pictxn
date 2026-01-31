@@ -8,3 +8,9 @@ pub struct UserDomain {
 #[derive(Debug, sqlx::Type, PartialEq)]
 #[sqlx(transparent)]
 pub struct UserId(Uuid);
+
+impl UserId {
+    pub fn generate() -> Self {
+        UserId(Uuid::new_v4())
+    }
+}
