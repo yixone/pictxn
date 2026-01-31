@@ -26,6 +26,27 @@ pub struct FileDomain {
     state: FileState,
 }
 
+impl FileDomain {
+    pub fn new(mimetype: String, filesize: i64, sha256: Sha256Hash) -> Self {
+        let id = FileId::generate();
+        let created_at = Utc::now();
+        let updated_at = Utc::now();
+        FileDomain {
+            id,
+            created_at,
+            updated_at,
+            mimetype,
+            filesize,
+            sha256,
+            color: None,
+            width: None,
+            height: None,
+            preview_allowed: false,
+            state: FileState::Pending,
+        }
+    }
+}
+
 #[derive(Debug, sqlx::Type, PartialEq, PartialOrd, Clone)]
 #[sqlx(transparent)]
 pub struct FileId(String);
