@@ -3,7 +3,7 @@ use std::process;
 use chrono::{DateTime, Utc};
 use rand::{Rng, rng};
 
-use crate::models::{database::cards::CardDb, domains::users::UserId};
+use crate::models::domains::users::UserId;
 
 #[derive(Debug)]
 pub struct CardDomain {
@@ -56,34 +56,6 @@ impl CardDomain {
 
     pub fn is_deleted(&self) -> bool {
         self.deleted_at.is_some()
-    }
-}
-
-impl From<CardDb> for CardDomain {
-    fn from(value: CardDb) -> Self {
-        CardDomain {
-            id: value.id,
-            author_id: value.author_id,
-            created_at: value.created_at,
-            title: value.title,
-            description: value.description,
-            visibility: value.visibility,
-            deleted_at: value.deleted_at,
-        }
-    }
-}
-
-impl From<CardDomain> for CardDb {
-    fn from(value: CardDomain) -> Self {
-        CardDb {
-            id: value.id,
-            author_id: value.author_id,
-            created_at: value.created_at,
-            title: value.title,
-            description: value.description,
-            visibility: value.visibility,
-            deleted_at: value.deleted_at,
-        }
     }
 }
 
