@@ -1,7 +1,29 @@
+use chrono::{DateTime, Utc};
+use sqlx::prelude::FromRow;
 use uuid::Uuid;
 
+use crate::types::files::Sha256Hash;
+
+#[derive(Debug, FromRow)]
 pub struct FileDomain {
-    //
+    id: FileId,
+
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
+
+    mimetype: String,
+    filesize: i64,
+
+    sha256: Sha256Hash,
+
+    color: Option<String>,
+
+    width: Option<u32>,
+    height: Option<u32>,
+
+    preview_allowed: bool,
+
+    state: FileState,
 }
 
 #[derive(Debug, sqlx::Type, PartialEq, PartialOrd, Clone)]

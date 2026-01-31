@@ -2,10 +2,11 @@ use std::process;
 
 use chrono::{DateTime, Utc};
 use rand::{Rng, rng};
+use sqlx::prelude::FromRow;
 
 use crate::models::domains::users::UserId;
 
-#[derive(Debug)]
+#[derive(Debug, FromRow)]
 pub struct CardDomain {
     id: CardId,
     author_id: UserId,
