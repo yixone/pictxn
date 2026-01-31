@@ -1,3 +1,5 @@
+use uuid::Uuid;
+
 pub struct FileDomain {
     //
 }
@@ -5,6 +7,12 @@ pub struct FileDomain {
 #[derive(Debug, sqlx::Type, PartialEq, PartialOrd, Clone)]
 #[sqlx(transparent)]
 pub struct FileId(String);
+
+impl FileId {
+    pub fn generate() -> Self {
+        FileId(Uuid::new_v4().simple().to_string())
+    }
+}
 
 #[derive(Debug, sqlx::Type, Clone, Copy)]
 #[sqlx(rename_all = "lowercase")]
