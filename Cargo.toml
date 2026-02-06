@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = ["crates/pictxn-api"]
+
+[workspace.package]
+repository = "https://github.com/yixone/pictxn"
+edition = "2024"
+
+[workspace.dependencies]

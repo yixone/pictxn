@@ -1,0 +1,8 @@
+/target
+
+.DS_Store
+
+*.note.md
+
+/tmp
+/data
