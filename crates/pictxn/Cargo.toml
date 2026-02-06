@@ -1,5 +1,5 @@
 [package]
-name = "pictxn-api"
+name = "pictxn"
 version = "0.1.0"
 repository.workspace = true
 edition.workspace = true
