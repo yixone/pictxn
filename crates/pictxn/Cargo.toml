@@ -4,4 +4,10 @@ version = "0.1.0"
 repository.workspace = true
 edition.workspace = true
 
+[lib]
+path = "src/pictxn.rs"
+doctest = false
+
 [dependencies]
+uuid = { workspace = true, features = ["v4"] }
+derive_more = { workspace = true, features = ["display", "from"] }

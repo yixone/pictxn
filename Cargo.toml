@@ -3,14 +3,7 @@ resolver = "2"
 members = [
   # Core
   "crates/pictxn",
-  # Api
-  "crates/server",
-  # Infra
-  "crates/db",
-  "crates/fs",
-  "crates/metrics",
 ]
-default-members = ["crates/server"]
 
 [workspace.package]
 repository = "https://github.com/yixone/pictxn"
@@ -19,6 +12,17 @@ publish = false
 
 [workspace.dependencies]
 pictxn = { path = "crates/pictxn" }
-db = { path = "crates/db" }
-fs = { path = "crates/fs" }
-metrics = { path = "crates/metrics" }
+
+async-trait = "0.1.89"
+tokio = "1.47.1"
+tokio-util = "0.7.16"
+futures = "0.3.31"
+
+sha2 = "0.10.9"
+hex = "0.4.3"
+uuid = "1.17.0"
+rand = "0.9.2"
+base64 = "0.22.1"
+chrono = "0.4.42"
+
+derive_more = "2.0.1"
