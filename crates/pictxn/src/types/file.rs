@@ -1,6 +1,14 @@
 #[derive(Debug, Clone, PartialEq, Hash, derive_more::Display)]
 pub struct FileId(pub String);
 
+impl FileId {
+    pub fn generate() -> Self {
+        let uuid = uuid::Uuid::new_v4();
+        let inner = uuid.as_simple().to_string();
+        FileId(inner)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub enum FileState {
     #[default]
