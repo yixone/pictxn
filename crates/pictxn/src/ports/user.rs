@@ -2,7 +2,7 @@ use crate::{
     errors::CoreResult,
     models::user::{CreateUserInput, User},
     types::{
-        context::AuthContext,
+        auth::AuthContext,
         user::{PasswordHash, UserId, Username},
     },
 };
