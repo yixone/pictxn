@@ -3,6 +3,8 @@ resolver = "2"
 members = [
   # Core
   "crates/pictxn",
+  # Infra
+  "crates/fs",
 ]
 
 [workspace.package]
