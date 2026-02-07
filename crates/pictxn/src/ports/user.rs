@@ -3,7 +3,7 @@ use crate::{
     models::user::{CreateUserInput, User},
     types::{
         context::AuthContext,
-        user::{UserId, Username},
+        user::{PasswordHash, UserId, Username},
     },
 };
 
@@ -24,10 +24,18 @@ trait UserService {
     ) -> CoreResult<()>;
 
     async fn delete_by_auth(&self, auth: &AuthContext) -> CoreResult<()>;
-    async fn delete_by_id(&self, id: UserId, auth: &AuthContext) -> CoreResult<()>;
+    async fn delete_user(&self, id: UserId, auth: &AuthContext) -> CoreResult<()>;
 }
 
 #[async_trait::async_trait]
 trait UserRepository {
-    //
+    async fn insert(&self, user: &User) -> CoreResult<()>;
+
+    async fn get_by_id(&self, id: UserId) -> CoreResult<Option<User>>;
+    async fn get_by_username(&self, username: &Username) -> CoreResult<Option<User>>;
+
+    async fn update_username(&self, id: UserId, new_username: &Username) -> CoreResult<()>;
+    async fn update_password(&self, id: UserId, new_password: &PasswordHash) -> CoreResult<()>;
+
+    async fn delete_by_id(&self, id: UserId) -> CoreResult<()>;
 }
