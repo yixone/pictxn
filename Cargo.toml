@@ -1,9 +1,24 @@
 [workspace]
 resolver = "2"
-members = ["crates/pictxn"]
+members = [
+  # Core
+  "crates/pictxn",
+  # Api
+  "crates/server",
+  # Infra
+  "crates/db",
+  "crates/fs",
+  "crates/metrics",
+]
+default-members = ["crates/server"]
 
 [workspace.package]
 repository = "https://github.com/yixone/pictxn"
 edition = "2024"
+publish = false
 
 [workspace.dependencies]
+pictxn = { path = "crates/pictxn" }
+db = { path = "crates/db" }
+fs = { path = "crates/fs" }
+metrics = { path = "crates/metrics" }

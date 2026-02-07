@@ -3,5 +3,21 @@
 version = 4
 
 [[package]]
+name = "db"
+version = "0.1.0"
+
+[[package]]
+name = "fs"
+version = "0.1.0"
+
+[[package]]
+name = "metrics"
+version = "0.1.0"
+
+[[package]]
 name = "pictxn"
+version = "0.1.0"
+
+[[package]]
+name = "server"
 version = "0.1.0"
