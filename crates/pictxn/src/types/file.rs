@@ -1,5 +1,9 @@
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Hash, derive_more::Display)]
+pub struct FileId(pub String);
+
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub enum FileState {
+    #[default]
     Pending,
     Processing,
     Ready,

@@ -9,5 +9,8 @@ path = "src/pictxn.rs"
 doctest = false
 
 [dependencies]
+async-trait = { workspace = true }
+
 uuid = { workspace = true, features = ["v4"] }
 derive_more = { workspace = true, features = ["display", "from"] }
+chrono = { workspace = true }
