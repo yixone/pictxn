@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = []
+default-members = []
+
+[workspace.package]
+edition = "2024"
+repository = "https://github.com/yixone/pictxn/"
+
+[workspace.dependencies]
