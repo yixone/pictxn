@@ -6,3 +6,5 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
+# Async
+async-trait.workspace = true

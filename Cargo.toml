@@ -8,6 +8,9 @@ edition = "2024"
 repository = "https://github.com/yixone/pictxn/"
 
 [workspace.dependencies]
+# Async
+async-trait = "0.1.89"
+
 # DB
 sqlx = "0.8.5"
 
