@@ -6,6 +6,9 @@ repository.workspace = true
 
 
 [dependencies]
+# DB (For derive)
+sqlx = { workspace = true, features = ["uuid", "chrono"] }
+
 # Utils
 uuid = { workspace = true, features = ["v4"] }
 chrono.workspace = true

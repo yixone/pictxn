@@ -1,11 +1,13 @@
 use chrono::{DateTime, Utc};
+use sqlx::prelude::{FromRow, Type};
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Type)]
+#[sqlx(transparent)]
 pub struct FileId(pub Uuid);
 
 /// File domain
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, FromRow)]
 pub struct File {
     /// Unique file id
     pub id: FileId,
@@ -14,7 +16,7 @@ pub struct File {
     pub created: DateTime<Utc>,
 
     /// Original filename
-    pub filename: String,
+    pub filename: Option<String>,
     /// Mimetype of this file
     pub content_type: String,
     /// Size of file (in bytes)
