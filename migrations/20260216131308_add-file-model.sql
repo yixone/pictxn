@@ -8,6 +8,5 @@ CREATE TABLE files (
 
   filename      VARCHAR(255),
   content_type  VARCHAR(64)   NOT NULL  DEFAULT 'application/octet-stream',
-  size          BIGINT        NOT NULL  DEFAULT 0,
-  color         VARCHAR(6)
+  size          BIGINT        NOT NULL  DEFAULT 0
 );

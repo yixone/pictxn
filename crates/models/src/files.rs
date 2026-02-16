@@ -31,6 +31,4 @@ pub struct File {
     pub content_type: String,
     /// Size of file (in bytes)
     pub size: isize,
-    /// Accent color of the file
-    pub color: String,
 }

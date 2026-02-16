@@ -3,3 +3,6 @@
 
 # System files
 .DS_Store
+
+# Internal
+*_note.md
