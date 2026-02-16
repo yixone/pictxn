@@ -16,7 +16,10 @@ pub struct File {
 
     /// Content source ID
     pub source: Option<SourceId>,
+
     /// URL from which the content was obtained
+    ///
+    /// If `None`, the content was uploaded manually by the user.
     pub source_url: Option<String>,
 
     /// File creation date

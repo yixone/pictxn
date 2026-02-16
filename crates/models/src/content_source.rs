@@ -5,6 +5,7 @@ use uuid::Uuid;
 #[sqlx(transparent)]
 pub struct SourceId(pub Uuid);
 
+/// Information about the content source
 #[derive(Debug, Clone, PartialEq, FromRow)]
 pub struct ContentSource {
     /// Unique Content Source id
