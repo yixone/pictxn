@@ -8,3 +8,16 @@ repository.workspace = true
 [dependencies]
 # Async
 async-trait.workspace = true
+
+
+# Serde
+serde.workspace = true
+
+# JSON (For RestAPI)
+serde_json.workspace = true
+
+# XML (For RSS)
+quick-xml = { version = "0.39.1", features = ["serialize"] }
+
+# Reqwest
+reqwest = "0.13.2"
