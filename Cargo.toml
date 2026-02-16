@@ -8,3 +8,6 @@ edition = "2024"
 repository = "https://github.com/yixone/pictxn/"
 
 [workspace.dependencies]
+# Utils
+uuid = "1.17.0"
+chrono = "0.4.42"

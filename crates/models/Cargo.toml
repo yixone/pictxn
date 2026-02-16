@@ -4,4 +4,8 @@ version = "0.1.0"
 edition.workspace = true
 repository.workspace = true
 
+
 [dependencies]
+# Utils
+uuid = { workspace = true, features = ["v4"] }
+chrono.workspace = true
