@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = []
+members = ["crates/models"]
 default-members = []
 
 [workspace.package]
