@@ -2,6 +2,8 @@ use chrono::{DateTime, Utc};
 use sqlx::prelude::{FromRow, Type};
 use uuid::Uuid;
 
+use crate::content_source::SourceId;
+
 #[derive(Debug, Clone, Copy, PartialEq, Type)]
 #[sqlx(transparent)]
 pub struct FileId(pub Uuid);
@@ -11,6 +13,11 @@ pub struct FileId(pub Uuid);
 pub struct File {
     /// Unique file id
     pub id: FileId,
+
+    /// Content source ID
+    pub source: Option<SourceId>,
+    /// URL from which the content was obtained
+    pub source_url: Option<String>,
 
     /// File creation date
     pub created: DateTime<Utc>,

@@ -1,6 +1,9 @@
 CREATE TABLE files (
   id            UUID          NOT NULL  PRIMARY KEY,
 
+  source        UUID          REFERENCES content_sources(id) ON DELETE SET NULL,
+  source_url    TEXT,
+
   created       TIMESTAMPTZ   NOT NULL,
 
   filename      VARCHAR(255),
