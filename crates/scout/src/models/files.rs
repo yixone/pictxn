@@ -1,21 +1,22 @@
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
-pub struct ExternalFile {
-    pub id: String,
-    pub files: ExternalFileUrls,
+pub struct ScoutFile {
+    /// File URL in different variants
+    pub files: ScoutFileUrls,
 
-    pub hash: Option<String>,
-
+    /// Media width
     pub width: Option<usize>,
+    /// Media height
     pub height: Option<usize>,
-
-    pub source: String,
 }
 
 #[derive(Debug, Serialize)]
-pub struct ExternalFileUrls {
-    pub preview: String,
-    pub sample: String,
-    pub source: String,
+pub struct ScoutFileUrls {
+    /// URL of the file to preview
+    pub preview: Option<String>,
+    /// URL of the file for normal display
+    pub sample: Option<String>,
+    /// URL of the original file
+    pub original: String,
 }
