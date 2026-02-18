@@ -26,9 +26,11 @@ struct SafebooruFetchQuery<'a> {
     page: &'a str,
     s: &'a str,
     q: &'a str,
-    json: u8,
+    #[serde(rename = "json")]
+    use_json: u8,
     limit: usize,
-    pid: usize,
+    #[serde(rename = "pid")]
+    page_id: usize,
 }
 
 impl SafebooruProvider {
@@ -39,7 +41,7 @@ impl SafebooruProvider {
     pub(crate) async fn fetch_list(
         &self,
         limit: usize,
-        pid: usize,
+        page_id: usize,
     ) -> Result<Vec<SafebooruContentItem>, ScoutError> {
         let items = self
             .http_client
@@ -48,9 +50,9 @@ impl SafebooruProvider {
                 page: "dapi",
                 s: "post",
                 q: "index",
-                json: 1,
+                use_json: 1,
                 limit,
-                pid,
+                page_id,
             })
             .send()
             .await?
