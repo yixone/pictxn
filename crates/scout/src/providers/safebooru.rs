@@ -1,5 +1,5 @@
 use reqwest::Client;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tracing::info;
 
 use crate::{
@@ -21,8 +21,18 @@ pub struct SafebooruProvider {
     http_client: Client,
 }
 
+#[derive(Serialize)]
+struct SafebooruFetchQuery<'a> {
+    page: &'a str,
+    s: &'a str,
+    q: &'a str,
+    json: u8,
+    limit: usize,
+    pid: usize,
+}
+
 impl SafebooruProvider {
-    pub fn new(http_client: Client) -> Self {
+    pub(crate) fn new(http_client: Client) -> Self {
         Self { http_client }
     }
 
@@ -31,20 +41,17 @@ impl SafebooruProvider {
         limit: usize,
         pid: usize,
     ) -> Result<Vec<SafebooruContentItem>, ScoutError> {
-        let limit = limit.to_string();
-        let pid = pid.to_string();
-
         let items = self
             .http_client
             .get(ENDPOINT)
-            .query(&[
-                ("page", "dapi"),
-                ("s", "post"),
-                ("q", "index"),
-                ("json", "1"),
-                ("limit", &limit),
-                ("pid", &pid),
-            ])
+            .query(&SafebooruFetchQuery {
+                page: "dapi",
+                s: "post",
+                q: "index",
+                json: 1,
+                limit,
+                pid,
+            })
             .send()
             .await?
             .error_for_status()?
@@ -66,13 +73,20 @@ impl ScoutProvider for SafebooruProvider {
         page: usize,
     ) -> Result<Vec<ExternalFile>, ScoutError> {
         let raw_items = self.fetch_list(limit, page).await?;
+        let items_count = raw_items.len();
+
         let items = raw_items
             .into_iter()
             .filter(filter_content)
             .map(ExternalFile::from)
             .collect::<Vec<_>>();
 
-        info!(api = "safebooru", count = items.len(), "Fetched");
+        info!(
+            api = "safebooru",
+            count = items.len(),
+            denied = items_count - items.len(),
+            "Fetched"
+        );
 
         Ok(items)
     }
