@@ -6,3 +6,4 @@ List of crates:
 | -------- | ------------------------------ | -------------------------------- |
 | `models` | [crates/models](crates/models) | Domain models                    |
 | `scout`  | [crates/scout](crates/scout)   | External APIs content aggregator |
+| `db`     | [crates/db](crates/db)         | Infra: database                  |
