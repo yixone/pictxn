@@ -1,6 +1,8 @@
 use chrono::{DateTime, Utc};
 use sqlx::{FromRow, Type};
 
+use crate::files::FileId;
+
 #[derive(Debug, Clone, Copy, PartialEq, Type)]
 #[sqlx(transparent)]
 pub struct CardId(pub i64);
@@ -10,6 +12,9 @@ pub struct CardId(pub i64);
 pub struct Card {
     /// Unique Card id
     pub id: CardId,
+
+    /// Related File ID
+    pub file_id: FileId,
 
     /// Card creation date
     pub created: DateTime<Utc>,
