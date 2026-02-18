@@ -80,7 +80,7 @@ fn map_item(i: SafebooruContentItem) -> ScoutCard {
             files: ScoutFileUrls {
                 preview: Some(i.preview_url),
                 sample: Some(i.sample_url),
-                source: i.file_url,
+                original: i.file_url,
             },
             width: Some(i.width),
             height: Some(i.height),
