@@ -3,6 +3,8 @@ use std::sync::Arc;
 use rand::seq::SliceRandom;
 use tracing::error;
 
+use crate::models::cards::ScoutCard;
+
 pub mod providers;
 
 pub mod errors;
@@ -34,16 +36,7 @@ impl ScoutService {
     ) -> Result<Vec<models::cards::ScoutCard>, errors::ScoutError> {
         let fetch_tasks = self.providers.iter().map(|p| {
             let p = p.clone();
-            tokio::spawn(async move {
-                let res = p.fetch_content(limit, page).await;
-                match res {
-                    Ok(items) => items,
-                    Err(e) => {
-                        error!(err = ?e, "Scout Provider error");
-                        Vec::new()
-                    }
-                }
-            })
+            tokio::spawn(service_task(p, limit, page))
         });
 
         let results = futures::future::join_all(fetch_tasks).await;
@@ -56,5 +49,16 @@ impl ScoutService {
         items.truncate(limit);
 
         Ok(items)
+    }
+}
+
+async fn service_task(p: Arc<dyn ScoutProvider>, limit: usize, page: usize) -> Vec<ScoutCard> {
+    let res = p.fetch_content(limit, page).await;
+    match res {
+        Ok(items) => items,
+        Err(e) => {
+            error!(err = ?e, "Scout Provider error");
+            Vec::new()
+        }
     }
 }
