@@ -8,7 +8,12 @@ repository.workspace = true
 [dependencies]
 # Async
 async-trait = { workspace = true }
-tokio = { workspace = true, features = ["macros"] }
+tokio = { workspace = true, features = [
+  "rt-multi-thread",
+  "macros",
+  "fs",
+  "io-util",
+] }
 
 # Serde
 serde = { workspace = true, features = ["derive"] }
@@ -24,3 +29,6 @@ tracing.workspace = true
 
 # Utils
 derive_more = { workspace = true, features = ["from"] }
+
+# Internal
+models.workspace = true

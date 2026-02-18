@@ -10,5 +10,5 @@ pub trait ScoutProvider: Send + Sync {
         &self,
         limit: usize,
         page: usize,
-    ) -> Result<Vec<models::files::ExternalFile>, errors::ScoutError>;
+    ) -> Result<Vec<models::cards::ScoutCard>, errors::ScoutError>;
 }

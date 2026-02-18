@@ -1,9 +1,10 @@
 use chrono::{DateTime, Utc};
+use serde::Serialize;
 use sqlx::{FromRow, Type};
 
 use crate::files::FileId;
 
-#[derive(Debug, Clone, Copy, PartialEq, Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Type, Serialize)]
 #[sqlx(transparent)]
 pub struct CardId(pub i64);
 

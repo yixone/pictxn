@@ -1,12 +1,17 @@
 use chrono::{DateTime, Utc};
+use serde::Serialize;
 use sqlx::prelude::{FromRow, Type};
 use uuid::Uuid;
 
 use crate::content_source::SourceId;
 
-#[derive(Debug, Clone, Copy, PartialEq, Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Type, Serialize)]
 #[sqlx(transparent)]
 pub struct FileId(pub Uuid);
+
+#[derive(Debug, Clone, PartialEq, Type, Serialize)]
+#[sqlx(transparent)]
+pub struct FileSha256(pub Vec<u8>);
 
 /// File domain
 #[derive(Debug, Clone, PartialEq, FromRow)]
@@ -15,7 +20,7 @@ pub struct File {
     pub id: FileId,
 
     /// Content source ID
-    pub source: Option<SourceId>,
+    pub source_id: Option<SourceId>,
 
     /// URL from which the content was obtained
     ///
@@ -24,6 +29,9 @@ pub struct File {
 
     /// File creation date
     pub created: DateTime<Utc>,
+
+    /// Sha256 file hash
+    pub sha256: FileSha256,
 
     /// Original filename
     pub filename: Option<String>,
