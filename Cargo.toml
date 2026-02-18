@@ -10,6 +10,13 @@ repository = "https://github.com/yixone/pictxn/"
 [workspace.dependencies]
 # Async
 async-trait = "0.1.89"
+tokio = "1.47.1"
+tokio-util = "0.7.16"
+futures = "0.3.31"
+
+# Serde
+serde = "1.0.219"
+serde_json = "1.0.140"
 
 # DB
 sqlx = "0.8.5"
@@ -17,3 +24,7 @@ sqlx = "0.8.5"
 # Utils
 uuid = "1.17.0"
 chrono = "0.4.42"
+derive_more = "2.0.1"
+
+# Tracing
+tracing = "0.1.40"

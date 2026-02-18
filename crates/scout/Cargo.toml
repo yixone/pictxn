@@ -7,4 +7,20 @@ repository.workspace = true
 
 [dependencies]
 # Async
-async-trait.workspace = true
+async-trait = { workspace = true }
+tokio = { workspace = true, features = ["macros"] }
+
+# Serde
+serde = { workspace = true, features = ["derive"] }
+
+# JSON (For RestAPI)
+serde_json.workspace = true
+
+# Reqwest
+reqwest = { version = "0.13.2", features = ["json", "query"] }
+
+# Tracing
+tracing.workspace = true
+
+# Utils
+derive_more = { workspace = true, features = ["from"] }
