@@ -8,3 +8,4 @@ List of crates:
 | `scout`  | [crates/scout](crates/scout)   | External APIs content aggregator |
 | `db`     | [crates/db](crates/db)         | Infra: database                  |
 | `ember`  | [crates/ember](crates/ember)   | Business logic and use cases     |
+| `result` | [crates/result](crates/result) | Result and Error types           |

@@ -1,6 +1,12 @@
 [workspace]
 resolver = "2"
-members = ["crates/db", "crates/ember", "crates/models", "crates/scout"]
+members = [
+  "crates/db",
+  "crates/ember",
+  "crates/models",
+  "crates/result",
+  "crates/scout",
+]
 default-members = []
 
 [workspace.package]
@@ -8,10 +14,13 @@ edition = "2024"
 repository = "https://github.com/yixone/pictxn/"
 
 [workspace.dependencies]
-# Inner
+# Internal
 db = { path = "./crates/db" }
 models = { path = "./crates/models" }
 scout = { path = "./crates/scout" }
+result = { path = "./crates/result" }
+ember = { path = "./crates/ember" }
+
 
 # Async
 async-trait = "0.1.89"

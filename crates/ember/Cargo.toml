@@ -5,3 +5,17 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
+# Internal
+db.workspace = true
+models.workspace = true
+scout.workspace = true
+
+# Async
+tokio = { workspace = true, features = ["macros"] }
+futures = { workspace = true }
+
+# Tracing
+tracing.workspace = true
+
+# Utils
+derive_more = { workspace = true, features = ["from"] }
