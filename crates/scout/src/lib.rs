@@ -34,10 +34,10 @@ impl ScoutService {
         limit: usize,
         page: usize,
     ) -> Result<Vec<models::cards::ScoutCard>, errors::ScoutError> {
-        let fetch_tasks = self.providers.iter().map(|p| {
-            let p = p.clone();
-            tokio::spawn(service_task(p, limit, page))
-        });
+        let fetch_tasks = self
+            .providers
+            .iter()
+            .map(|p| tokio::spawn(service_task(p.clone(), limit, page)));
 
         let results = futures::future::join_all(fetch_tasks).await;
         let mut items = results
