@@ -8,6 +8,13 @@ repository.workspace = true
 # Async
 async-trait.workspace = true
 
+tokio = { workspace = true, features = [
+  "rt-multi-thread",
+  "macros",
+  "fs",
+  "io-util",
+] }
+
 # SQLX
 sqlx = { workspace = true, features = ["sqlite", "runtime-tokio"] }
 

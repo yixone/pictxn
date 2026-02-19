@@ -284,6 +284,7 @@ dependencies = [
  "async-trait",
  "models",
  "sqlx",
+ "tokio",
 ]
 
 [[package]]
