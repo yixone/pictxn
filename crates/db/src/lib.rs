@@ -1,45 +1,27 @@
 pub mod ops;
-mod repos;
 
-use std::path::Path;
+pub mod sqlite;
 
-use sqlx::{
-    SqlitePool,
-    migrate::Migrator,
-    sqlite::{SqliteConnectOptions, SqlitePoolOptions},
-};
+use std::{ops::Deref, sync::Arc};
 
-// TODO: Add metrics collection
+use crate::ops::AbstractBase;
 
 #[derive(Clone)]
 pub struct Database {
-    /// Database connections pool
-    pool: SqlitePool,
+    inner: Arc<dyn AbstractBase>,
 }
 
-static MIGRATOR: Migrator = sqlx::migrate!("../../migrations");
-
 impl Database {
-    /// Open database from file
-    pub async fn open_file(path: &Path) -> Result<Self, sqlx::Error> {
-        if !path.exists()
-            && let Some(parent) = path.parent()
-        {
-            std::fs::create_dir_all(parent)?;
-        }
-
-        let options = SqliteConnectOptions::new()
-            .create_if_missing(true)
-            .filename(path);
-
-        let pool = SqlitePoolOptions::new().connect_with(options).await?;
-
-        let this = Database { pool };
-        Ok(this)
+    pub fn new<T: AbstractBase + 'static>(inner: T) -> Self {
+        let inner = Arc::new(inner);
+        Database { inner }
     }
+}
 
-    /// Apply migrations to the database
-    pub async fn migrate(&self) -> Result<(), sqlx::Error> {
-        MIGRATOR.run(&self.pool).await.map_err(sqlx::Error::from)
+impl Deref for Database {
+    type Target = dyn AbstractBase;
+
+    fn deref(&self) -> &Self::Target {
+        self.inner.as_ref()
     }
 }

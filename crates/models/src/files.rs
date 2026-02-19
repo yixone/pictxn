@@ -38,5 +38,5 @@ pub struct File {
     /// Mimetype of this file
     pub content_type: String,
     /// Size of file (in bytes)
-    pub size: isize,
+    pub size: i64,
 }
