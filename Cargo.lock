@@ -467,6 +467,17 @@ dependencies = [
 [[package]]
 name = "fs"
 version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "futures",
+ "hex",
+ "reqwest",
+ "result",
+ "sha2",
+ "tokio",
+ "tokio-util",
+]
 
 [[package]]
 name = "fs_extra"

@@ -5,3 +5,19 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
+# Async
+async-trait.workspace = true
+tokio = { workspace = true, features = ["fs", "io-util"] }
+tokio-util = { workspace = true, features = ["io"] }
+futures.workspace = true
+
+# HttpClient
+reqwest = { workspace = true, features = ["json", "query"] }
+
+# Utils
+sha2.workspace = true
+chrono = { workspace = true, features = ["serde"] }
+hex.workspace = true
+
+# Internal
+result.workspace = true
