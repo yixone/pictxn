@@ -11,6 +11,12 @@ pub enum AppError {
     /// Error not labeled
     NotLabeled,
 
+    /// An entity with the specified parameters was not found
+    NotFound,
+
+    #[display("TOO_LARGE_INPUT")]
+    TooLargeInput { received: u64, excepted: u64 },
+
     /// Internal Application Error
     InternalError {
         /// Source of error

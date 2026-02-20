@@ -1,11 +1,11 @@
 use serde::Serialize;
 
-use crate::{models::files::ScoutFile, providers::ProviderType};
+use crate::models::files::ScoutFile;
 
 #[derive(Debug, Serialize)]
 pub struct ScoutCard {
     /// The provider that created the card
-    pub provider: ProviderType,
+    pub provider_id: &'static str,
 
     /// Card title
     pub title: Option<String>,

@@ -6,10 +6,8 @@ use tracing::error;
 
 use crate::models::cards::ScoutCard;
 
-pub mod providers;
-
-pub mod errors;
 pub mod models;
+pub mod providers;
 
 #[async_trait::async_trait]
 pub trait ScoutProvider: Send + Sync {
