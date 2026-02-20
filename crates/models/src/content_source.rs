@@ -1,7 +1,8 @@
+use serde::Serialize;
 use sqlx::{Type, prelude::FromRow};
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Copy, PartialEq, Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Type, Serialize)]
 #[sqlx(transparent)]
 pub struct SourceId(pub Uuid);
 
@@ -13,4 +14,12 @@ pub struct ContentSource {
 
     /// Content Source Domain
     pub source_domain: String,
+}
+
+#[derive(Debug, Serialize)]
+pub struct ContentSourceApi {
+    /// Unique Content Source id
+    pub id: SourceId,
+    /// Content Source Domain
+    pub sourec_domain: String,
 }

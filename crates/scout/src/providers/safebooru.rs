@@ -4,13 +4,12 @@ use tracing::info;
 
 use crate::{
     ScoutProvider,
-    errors::ScoutError,
     models::{
         cards::ScoutCard,
         files::{ScoutFile, ScoutFileUrls},
     },
-    providers::ProviderType,
 };
+use result::Result;
 
 /// Minimum image width
 const MIN_WIDTH: usize = 256;
@@ -19,6 +18,9 @@ const MIN_HEIGHT: usize = 256;
 
 /// Safebooru API Endpoint
 const SOURCE_ENDPOINT: &str = "https://safebooru.org/index.php";
+
+/// Provider ID
+const PROVIDER_ID: &str = "safebooru";
 
 /// Structure for working with safebooru API
 pub struct SafebooruProvider {
@@ -32,9 +34,9 @@ struct SafebooruFetchQuery<'a> {
     q: &'a str,
     #[serde(rename = "json")]
     use_json: u8,
-    limit: usize,
+    limit: u32,
     #[serde(rename = "pid")]
-    page_id: usize,
+    page_id: u32,
 }
 
 impl SafebooruProvider {
@@ -44,9 +46,9 @@ impl SafebooruProvider {
 
     pub(crate) async fn fetch_list(
         &self,
-        limit: usize,
-        page_id: usize,
-    ) -> Result<Vec<SafebooruContentItem>, ScoutError> {
+        limit: u32,
+        page_id: u32,
+    ) -> Result<Vec<SafebooruContentItem>> {
         let items = self
             .http_client
             .get(SOURCE_ENDPOINT)
@@ -65,40 +67,40 @@ impl SafebooruProvider {
             .await?;
         Ok(items)
     }
-}
 
-fn filter_content(i: &SafebooruContentItem) -> bool {
-    i.width >= MIN_WIDTH && i.height >= MIN_HEIGHT
-}
+    fn filter_content(i: &SafebooruContentItem) -> bool {
+        i.width >= MIN_WIDTH && i.height >= MIN_HEIGHT
+    }
 
-fn map_item(i: SafebooruContentItem) -> ScoutCard {
-    ScoutCard {
-        provider: ProviderType::Safebooru,
-        title: None,
-        description: None,
-        file: ScoutFile {
-            files: ScoutFileUrls {
-                preview: Some(i.preview_url),
-                sample: Some(i.sample_url),
-                original: i.file_url,
+    fn map_item(i: SafebooruContentItem) -> ScoutCard {
+        ScoutCard {
+            provider_id: PROVIDER_ID,
+            title: None,
+            description: None,
+            file: ScoutFile {
+                files: ScoutFileUrls {
+                    preview: Some(i.preview_url),
+                    sample: Some(i.sample_url),
+                    original: i.file_url,
+                },
+                width: Some(i.width),
+                height: Some(i.height),
             },
-            width: Some(i.width),
-            height: Some(i.height),
-        },
-        origin_url: i.source.unwrap_or_else(|| SOURCE_ENDPOINT.to_string()),
+            origin_url: i.source.unwrap_or_else(|| SOURCE_ENDPOINT.to_string()),
+        }
     }
 }
 
 #[async_trait::async_trait]
 impl ScoutProvider for SafebooruProvider {
-    async fn fetch_content(&self, limit: usize, page: usize) -> Result<Vec<ScoutCard>, ScoutError> {
+    async fn fetch_content(&self, limit: u32, page: u32) -> Result<Vec<ScoutCard>> {
         let raw_items = self.fetch_list(limit, page).await?;
         let items_count = raw_items.len();
 
         let items = raw_items
             .into_iter()
-            .filter(filter_content)
-            .map(map_item)
+            .filter(Self::filter_content)
+            .map(Self::map_item)
             .collect::<Vec<_>>();
 
         info!(
