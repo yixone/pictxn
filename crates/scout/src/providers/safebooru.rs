@@ -4,13 +4,13 @@ use tracing::info;
 
 use crate::{
     ScoutProvider,
-    errors::ScoutError,
     models::{
         cards::ScoutCard,
         files::{ScoutFile, ScoutFileUrls},
     },
     providers::ProviderType,
 };
+use result::Result;
 
 /// Minimum image width
 const MIN_WIDTH: usize = 256;
@@ -32,9 +32,9 @@ struct SafebooruFetchQuery<'a> {
     q: &'a str,
     #[serde(rename = "json")]
     use_json: u8,
-    limit: usize,
+    limit: u32,
     #[serde(rename = "pid")]
-    page_id: usize,
+    page_id: u32,
 }
 
 impl SafebooruProvider {
@@ -44,9 +44,9 @@ impl SafebooruProvider {
 
     pub(crate) async fn fetch_list(
         &self,
-        limit: usize,
-        page_id: usize,
-    ) -> Result<Vec<SafebooruContentItem>, ScoutError> {
+        limit: u32,
+        page_id: u32,
+    ) -> Result<Vec<SafebooruContentItem>> {
         let items = self
             .http_client
             .get(SOURCE_ENDPOINT)
@@ -91,7 +91,7 @@ fn map_item(i: SafebooruContentItem) -> ScoutCard {
 
 #[async_trait::async_trait]
 impl ScoutProvider for SafebooruProvider {
-    async fn fetch_content(&self, limit: usize, page: usize) -> Result<Vec<ScoutCard>, ScoutError> {
+    async fn fetch_content(&self, limit: u32, page: u32) -> Result<Vec<ScoutCard>> {
         let raw_items = self.fetch_list(limit, page).await?;
         let items_count = raw_items.len();
 

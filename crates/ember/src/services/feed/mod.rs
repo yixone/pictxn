@@ -1,1 +1,1 @@
-pub mod get_feed;
+pub mod get_external_feed;

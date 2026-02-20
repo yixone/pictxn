@@ -383,6 +383,7 @@ dependencies = [
  "derive_more",
  "futures",
  "models",
+ "result",
  "scout",
  "tokio",
  "tracing",
@@ -1503,6 +1504,7 @@ name = "result"
 version = "0.1.0"
 dependencies = [
  "derive_more",
+ "reqwest",
 ]
 
 [[package]]
@@ -1675,6 +1677,7 @@ dependencies = [
  "models",
  "rand 0.9.2",
  "reqwest",
+ "result",
  "serde",
  "serde_json",
  "tokio",

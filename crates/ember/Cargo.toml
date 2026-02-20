@@ -9,6 +9,7 @@ repository.workspace = true
 db.workspace = true
 models.workspace = true
 scout.workspace = true
+result.workspace = true
 
 # Async
 tokio = { workspace = true, features = ["macros"] }
