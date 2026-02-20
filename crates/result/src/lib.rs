@@ -11,6 +11,9 @@ pub enum AppError {
     /// Error not labeled
     NotLabeled,
 
+    /// An entity with the specified parameters was not found
+    NotFound,
+
     /// Internal Application Error
     InternalError {
         /// Source of error

@@ -8,7 +8,6 @@ use crate::{
         cards::ScoutCard,
         files::{ScoutFile, ScoutFileUrls},
     },
-    providers::ProviderType,
 };
 use result::Result;
 
@@ -19,6 +18,9 @@ const MIN_HEIGHT: usize = 256;
 
 /// Safebooru API Endpoint
 const SOURCE_ENDPOINT: &str = "https://safebooru.org/index.php";
+
+/// Provider ID
+const PROVIDER_ID: &str = "safebooru";
 
 /// Structure for working with safebooru API
 pub struct SafebooruProvider {
@@ -65,27 +67,27 @@ impl SafebooruProvider {
             .await?;
         Ok(items)
     }
-}
 
-fn filter_content(i: &SafebooruContentItem) -> bool {
-    i.width >= MIN_WIDTH && i.height >= MIN_HEIGHT
-}
+    fn filter_content(i: &SafebooruContentItem) -> bool {
+        i.width >= MIN_WIDTH && i.height >= MIN_HEIGHT
+    }
 
-fn map_item(i: SafebooruContentItem) -> ScoutCard {
-    ScoutCard {
-        provider: ProviderType::Safebooru,
-        title: None,
-        description: None,
-        file: ScoutFile {
-            files: ScoutFileUrls {
-                preview: Some(i.preview_url),
-                sample: Some(i.sample_url),
-                original: i.file_url,
+    fn map_item(i: SafebooruContentItem) -> ScoutCard {
+        ScoutCard {
+            provider_id: PROVIDER_ID,
+            title: None,
+            description: None,
+            file: ScoutFile {
+                files: ScoutFileUrls {
+                    preview: Some(i.preview_url),
+                    sample: Some(i.sample_url),
+                    original: i.file_url,
+                },
+                width: Some(i.width),
+                height: Some(i.height),
             },
-            width: Some(i.width),
-            height: Some(i.height),
-        },
-        origin_url: i.source.unwrap_or_else(|| SOURCE_ENDPOINT.to_string()),
+            origin_url: i.source.unwrap_or_else(|| SOURCE_ENDPOINT.to_string()),
+        }
     }
 }
 
@@ -97,8 +99,8 @@ impl ScoutProvider for SafebooruProvider {
 
         let items = raw_items
             .into_iter()
-            .filter(filter_content)
-            .map(map_item)
+            .filter(Self::filter_content)
+            .map(Self::map_item)
             .collect::<Vec<_>>();
 
         info!(
