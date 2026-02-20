@@ -12,11 +12,11 @@ tokio-util = { workspace = true, features = ["io"] }
 futures.workspace = true
 
 # HttpClient
-reqwest = { workspace = true, features = ["json", "query"] }
+reqwest = { workspace = true }
 
 # Utils
 sha2.workspace = true
-chrono = { workspace = true, features = ["serde"] }
+chrono = { workspace = true }
 hex.workspace = true
 
 # Internal
