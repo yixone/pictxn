@@ -25,7 +25,10 @@ impl ScoutService {
     }
 
     pub async fn fetch(&self, limit: u32, page: u32) -> Result<Vec<models::cards::ScoutCard>> {
-        let fetch_tasks = self.providers.iter().map(|p| tokio::spawn(service_task(p.clone(), limit, page)));
+        let fetch_tasks = self
+            .providers
+            .iter()
+            .map(|p| tokio::spawn(service_task(p.clone(), limit, page)));
 
         let results = futures::future::join_all(fetch_tasks).await;
         let mut items = results

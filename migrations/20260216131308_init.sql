@@ -15,7 +15,7 @@ CREATE INDEX idx_card_file_id ON cards(file_id);
 CREATE TABLE files (
   id            UUID          NOT NULL  PRIMARY KEY,
 
-  source_id     UUID          REFERENCES content_domains(id) ON DELETE SET NULL,
+  source_id     UUID          REFERENCES content_sources(id) ON DELETE SET NULL,
   source_url    TEXT,
 
   created       TIMESTAMPTZ   NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE files (
   size          BIGINT        NOT NULL
 );
 
-CREATE TABLE content_domains (
+CREATE TABLE content_sources (
   id            UUID          NOT NULL PRIMARY KEY,
   source_domain VARCHAR(512)  NOT NULL UNIQUE
 );
