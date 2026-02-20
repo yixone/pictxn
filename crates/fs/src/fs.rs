@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 use futures::{StreamExt, TryStreamExt};
 use reqwest::Client;
-use result::{AppError, Result};
+use result::Result;
 use sha2::{Digest, Sha256};
 use tokio::{
     fs::File,

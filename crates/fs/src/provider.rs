@@ -1,3 +1,5 @@
+use std::{ops::Deref, sync::Arc};
+
 use reqwest::Client;
 use result::Result;
 
@@ -27,4 +29,25 @@ pub trait FileStorageProvider: Send + Sync {
 
     /// Delete file by key
     async fn delete(&self, key: &str) -> Result<()>;
+}
+
+#[derive(Clone)]
+pub struct FileStorage {
+    inner: Arc<dyn FileStorageProvider>,
+}
+
+impl FileStorage {
+    pub fn new<T: FileStorageProvider + 'static>(inner: T) -> Self {
+        FileStorage {
+            inner: Arc::new(inner),
+        }
+    }
+}
+
+impl Deref for FileStorage {
+    type Target = dyn FileStorageProvider;
+
+    fn deref(&self) -> &Self::Target {
+        self.inner.as_ref()
+    }
 }
