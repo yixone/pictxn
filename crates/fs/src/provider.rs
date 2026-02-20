@@ -1,3 +1,4 @@
+use reqwest::Client;
 use result::Result;
 
 use crate::{hash::FileHash, stream::FileStream};
@@ -22,7 +23,7 @@ pub trait FileStorageProvider: Send + Sync {
         stream: &mut FileStream<'a>,
     ) -> Result<OutputSetFile>;
     /// Save file by URL
-    async fn set_from_url(&self, key: &str, url: &str) -> Result<OutputSetFile>;
+    async fn set_from_url(&self, key: &str, url: &str, client: &Client) -> Result<OutputSetFile>;
 
     /// Delete file by key
     async fn delete(&self, key: &str) -> Result<()>;

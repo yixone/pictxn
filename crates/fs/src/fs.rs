@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 
-use futures::StreamExt;
+use futures::{StreamExt, TryStreamExt};
+use reqwest::Client;
 use result::{AppError, Result};
 use sha2::{Digest, Sha256};
 use tokio::{
@@ -9,6 +10,7 @@ use tokio::{
     time::Instant,
 };
 use tokio_util::io::ReaderStream;
+use tracing::error;
 
 use crate::{
     BUFF_WRITER_CAPACITY, MAX_FILE_SIZE,
@@ -38,7 +40,11 @@ impl NativeFsProvider {
     }
 
     async fn write_fallback(path: &Path) {
-        todo!()
+        if path.is_file()
+            && let Err(e) = tokio::fs::remove_file(path).await
+        {
+            error!(err = ?e, "Failed to execute write fallback");
+        }
     }
 
     async fn create_parent_dir(path: &Path) -> Result<()> {
@@ -78,7 +84,7 @@ impl FileStorageProvider for NativeFsProvider {
 
         let mut target_writer = BufWriter::with_capacity(BUFF_WRITER_CAPACITY, temp_file);
 
-        let write_res = {
+        let write_result = {
             while let Some(chunk) = stream.next().await {
                 let chunk = chunk?;
 
@@ -95,7 +101,7 @@ impl FileStorageProvider for NativeFsProvider {
             }
             Ok(())
         };
-        if let Err(e) = write_res {
+        if let Err(e) = write_result {
             drop(target_writer);
             Self::write_fallback(&temp_path).await;
 
@@ -123,11 +129,17 @@ impl FileStorageProvider for NativeFsProvider {
     }
 
     /// Save file by URL
-    async fn set_from_url(&self, key: &str, url: &str) -> Result<OutputSetFile> {
-        let path = self.os_path_from_key(key);
-        Self::create_parent_dir(&path).await?;
+    async fn set_from_url(&self, key: &str, url: &str, client: &Client) -> Result<OutputSetFile> {
+        let mut res = client
+            .get(url)
+            .send()
+            .await?
+            .error_for_status()?
+            .bytes_stream()
+            .map_err(std::io::Error::other)
+            .boxed();
 
-        todo!()
+        self.set_from_stream(key, &mut res).await
     }
 
     /// Delete file by key
