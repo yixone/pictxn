@@ -1,0 +1,14 @@
+use serde::Serialize;
+use sqlx::Type;
+use uuid::Uuid;
+
+#[derive(Debug, Clone, Copy, PartialEq, Type, Serialize)]
+#[sqlx(transparent)]
+pub struct CardId(pub Uuid);
+
+impl CardId {
+    pub fn generate() -> Self {
+        let inner = Uuid::new_v4();
+        CardId(inner)
+    }
+}
