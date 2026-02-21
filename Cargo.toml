@@ -2,7 +2,6 @@
 resolver = "2"
 members = [
   "crates/db",
-  "crates/ember",
   "crates/fs",
   "crates/models",
   "crates/result",
@@ -20,8 +19,6 @@ db = { path = "./crates/db" }
 models = { path = "./crates/models" }
 scout = { path = "./crates/scout" }
 result = { path = "./crates/result" }
-ember = { path = "./crates/ember" }
-
 
 # Async
 async-trait = "0.1.89"

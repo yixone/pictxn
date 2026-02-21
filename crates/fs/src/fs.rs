@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 use futures::{StreamExt, TryStreamExt};
 use reqwest::Client;
-use result::Result;
+use result::{Result, errors::AppError};
 use sha2::{Digest, Sha256};
 use tokio::{
     fs::File,
@@ -90,7 +90,7 @@ impl FileStorageProvider for NativeFsProvider {
 
                 file_size += chunk.len() as u64;
                 if file_size > MAX_FILE_SIZE {
-                    Err(result::AppError::TooLargeInput {
+                    Err(AppError::TooLargeInput {
                         received: file_size,
                         excepted: MAX_FILE_SIZE,
                     })?;

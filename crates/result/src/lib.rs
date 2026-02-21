@@ -1,25 +1,4 @@
-use std::error::Error;
-
-use derive_more::Display;
-
+pub mod errors;
 pub mod mappers;
 
-pub type Result<T> = std::result::Result<T, AppError>;
-
-#[derive(Debug, Display)]
-pub enum AppError {
-    /// Error not labeled
-    NotLabeled,
-
-    /// An entity with the specified parameters was not found
-    NotFound,
-
-    #[display("TOO_LARGE_INPUT")]
-    TooLargeInput { received: u64, excepted: u64 },
-
-    /// Internal Application Error
-    InternalError {
-        /// Source of error
-        source: Box<dyn Error + Send + Sync>,
-    },
-}
+pub type Result<T> = std::result::Result<T, errors::AppError>;

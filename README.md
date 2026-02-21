@@ -7,6 +7,5 @@ List of crates:
 | `models` | [crates/models](crates/models) | Domain models                    |
 | `scout`  | [crates/scout](crates/scout)   | External APIs content aggregator |
 | `db`     | [crates/db](crates/db)         | Database                         |
-| `ember`  | [crates/ember](crates/ember)   | Business logic and use cases     |
 | `result` | [crates/result](crates/result) | Result and Error types           |
 | `fs`     | [crates/fs](crates/fs)         | File storage services            |

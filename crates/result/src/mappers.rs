@@ -1,4 +1,4 @@
-use crate::AppError;
+use crate::errors::AppError;
 
 impl From<std::io::Error> for AppError {
     fn from(value: std::io::Error) -> Self {

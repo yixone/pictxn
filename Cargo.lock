@@ -376,20 +376,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ember"
-version = "0.1.0"
-dependencies = [
- "db",
- "derive_more",
- "futures",
- "models",
- "result",
- "scout",
- "tokio",
- "tracing",
-]
-
-[[package]]
 name = "encoding_rs"
 version = "0.8.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
