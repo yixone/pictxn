@@ -4,11 +4,16 @@ use rand::seq::SliceRandom;
 use tracing::error;
 
 use crate::{
-    result::Result,
+    result::{Result, errors::AppError},
     scout::{channels::base::BaseChannel, content::ScoutContentItem},
 };
 
+const MAX_LIMIT: u32 = 1024;
+
+pub(super) const CHANNEL_REQUEST_TIMEOUT: u64 = 4;
+
 type AbstractChannel = Arc<dyn BaseChannel>;
+
 pub struct ScoutService {
     channels: Vec<AbstractChannel>,
 }
@@ -19,22 +24,32 @@ impl ScoutService {
         ScoutService { channels }
     }
 
-    async fn fetch_list(&self, limit: u32, pid: u32) -> Result<Vec<ScoutContentItem>> {
-        let tasks = self
-            .channels
-            .iter()
-            .map(|c| tokio::spawn(fetch_task(c.clone(), limit, pid)));
-
-        Ok(futures::future::join_all(tasks)
-            .await
-            .into_iter()
-            .flat_map(|i| i.unwrap_or_default())
-            .collect())
-    }
-
     /// Get a list of cards from external API
     pub async fn fetch(&self, limit: u32, pid: u32) -> Result<Vec<ScoutContentItem>> {
-        let mut items = self.fetch_list(limit, pid).await?;
+        if limit > MAX_LIMIT {
+            return Err(AppError::TooBigPaginationLimit {
+                received: limit,
+                max: MAX_LIMIT,
+            });
+        }
+        if limit == 0 || self.channels.is_empty() {
+            return Ok(vec![]);
+        }
+
+        let channels_count = self.channels.len() as u32;
+        let limit_per_channel = limit.div_ceil(channels_count).max(1) * 2;
+
+        let futures = self
+            .channels
+            .iter()
+            .map(|c| fetch_task(c.clone(), limit_per_channel, pid));
+        let result = futures::future::join_all(futures).await;
+
+        let mut items = result.into_iter().flatten().collect::<Vec<_>>();
+
+        if items.is_empty() {
+            return Err(AppError::EmptyFeed);
+        }
 
         items.shuffle(&mut rand::rng());
         items.truncate(limit as usize);

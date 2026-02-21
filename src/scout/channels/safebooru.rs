@@ -1,9 +1,13 @@
+use std::time::Duration;
+
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
 use crate::{
     result::Result,
-    scout::{channels::base::BaseChannel, content::ScoutContentItem},
+    scout::{
+        channels::base::BaseChannel, content::ScoutContentItem, service::CHANNEL_REQUEST_TIMEOUT,
+    },
 };
 
 pub struct SafebooruChannel {
@@ -62,6 +66,7 @@ impl BaseChannel for SafebooruChannel {
                 limit,
                 page_id: page,
             })
+            .timeout(Duration::from_secs(CHANNEL_REQUEST_TIMEOUT))
             .send()
             .await?
             .error_for_status()?
