@@ -1,6 +1,8 @@
 use crate::storage::types::hash::FileHash;
 
-pub struct OutputSaveFile {
+pub struct OutputTempFile {
+    /// The key under which the file was saved
+    pub key: String,
     /// Hash of the saved file
     pub file_hash: FileHash,
     /// Saved file size (in bytes)
