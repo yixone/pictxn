@@ -9,7 +9,10 @@ pub trait AbstractContentSources: Send + Sync {
     async fn insert_content_source(&self, source: &ContentSource) -> Result<()>;
 
     /// Insert a new content source or return existent row ID
-    async fn insert_content_source_or_return_id(&self, source: &ContentSource) -> Result<()>;
+    async fn insert_content_source_or_return_id(
+        &self,
+        source: &ContentSource,
+    ) -> Result<ContentSourceId>;
 
     /// Get a content source from the database by ID
     async fn get_content_source(&self, id: &ContentSourceId) -> Result<Option<ContentSource>>;

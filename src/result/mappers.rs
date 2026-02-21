@@ -18,3 +18,14 @@ impl From<reqwest::Error> for AppError {
         }
     }
 }
+
+impl From<sqlx::Error> for AppError {
+    fn from(value: sqlx::Error) -> Self {
+        match value {
+            sqlx::Error::RowNotFound => AppError::NotFound,
+            _ => AppError::InternalError {
+                source: Box::new(value),
+            },
+        }
+    }
+}
