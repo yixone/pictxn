@@ -3,4 +3,4 @@ use sqlx::Type;
 
 #[derive(Debug, Clone, PartialEq, Type, Serialize)]
 #[sqlx(transparent)]
-pub struct FileHash(pub Vec<u8>);
+pub struct DomainFileHash(pub Vec<u8>);

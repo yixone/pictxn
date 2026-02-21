@@ -9,11 +9,9 @@ use crate::{
 };
 
 const MAX_LIMIT: u32 = 1024;
-
 pub(super) const CHANNEL_REQUEST_TIMEOUT: u64 = 4;
 
 type AbstractChannel = Arc<dyn BaseChannel>;
-
 pub struct ScoutService {
     channels: Vec<AbstractChannel>,
 }

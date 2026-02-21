@@ -3,7 +3,7 @@ use sqlx::FromRow;
 
 use crate::domains::{
     content_sources::id::ContentSourceId,
-    files::{hash::FileHash, id::FileId},
+    files::{hash::DomainFileHash, id::FileId},
 };
 
 /// File domain
@@ -21,7 +21,7 @@ pub struct File {
     pub created: DateTime<Utc>,
 
     /// Unique Sha256 file hash
-    pub sha256: FileHash,
+    pub sha256: DomainFileHash,
 
     /// Original filename
     pub filename: Option<String>,
