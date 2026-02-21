@@ -11,7 +11,7 @@ pub struct ScoutContentItem {
     pub description: Option<String>,
 
     /// URL from the file was obtained
-    pub origin_url: String,
+    pub origin_url: Option<String>,
 
     /// Media width
     pub media_width: Option<usize>,
