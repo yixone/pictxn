@@ -3,6 +3,7 @@ use std::{ops::Deref, sync::Arc};
 use crate::database::ops::AbstractDatabase;
 
 /// Abstract database provider
+#[derive(Clone)]
 pub struct Database {
     inner: Arc<dyn AbstractDatabase>,
 }
