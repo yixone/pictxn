@@ -19,19 +19,26 @@ impl ScoutService {
         ScoutService { channels }
     }
 
-    /// Get a list of cards from external APIs
-    pub async fn fetch(&self, limit: u32, pid: u32) -> Result<Vec<ScoutContentItem>> {
+    async fn fetch_list(&self, limit: u32, pid: u32) -> Result<Vec<ScoutContentItem>> {
         let tasks = self
             .channels
             .iter()
             .map(|c| tokio::spawn(fetch_task(c.clone(), limit, pid)));
-        let results = futures::future::join_all(tasks).await;
-        let mut items = results
+
+        Ok(futures::future::join_all(tasks)
+            .await
             .into_iter()
             .flat_map(|i| i.unwrap_or_default())
-            .collect::<Vec<_>>();
+            .collect())
+    }
+
+    /// Get a list of cards from external API
+    pub async fn fetch(&self, limit: u32, pid: u32) -> Result<Vec<ScoutContentItem>> {
+        let mut items = self.fetch_list(limit, pid).await?;
+
         items.shuffle(&mut rand::rng());
         items.truncate(limit as usize);
+
         Ok(items)
     }
 }
