@@ -1,6 +1,12 @@
 use std::sync::Arc;
 
-use crate::scout::channels::base::BaseChannel;
+use rand::seq::SliceRandom;
+use tracing::error;
+
+use crate::{
+    result::Result,
+    scout::{channels::base::BaseChannel, content::ScoutContentItem},
+};
 
 type AbstractChannel = Arc<dyn BaseChannel>;
 pub struct ScoutService {
@@ -14,7 +20,28 @@ impl ScoutService {
     }
 
     /// Get a list of cards from external APIs
-    pub async fn fetch(&self) {
-        todo!()
+    pub async fn fetch(&self, limit: u32, pid: u32) -> Result<Vec<ScoutContentItem>> {
+        let tasks = self
+            .channels
+            .iter()
+            .map(|c| tokio::spawn(fetch_task(c.clone(), limit, pid)));
+        let results = futures::future::join_all(tasks).await;
+        let mut items = results
+            .into_iter()
+            .flat_map(|i| i.unwrap_or_default())
+            .collect::<Vec<_>>();
+        items.shuffle(&mut rand::rng());
+        items.truncate(limit as usize);
+        Ok(items)
+    }
+}
+
+async fn fetch_task(channel: AbstractChannel, limit: u32, pid: u32) -> Vec<ScoutContentItem> {
+    match channel.fetch(limit, pid).await {
+        Ok(items) => items,
+        Err(e) => {
+            error!(err = ?e, "Scout Provider error");
+            Vec::new()
+        }
     }
 }
