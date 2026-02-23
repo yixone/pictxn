@@ -35,11 +35,7 @@ async fn main() -> Result<()> {
     let scout = ScoutService::new(vec![safebooru]);
 
     // 4. Collecting the application context and config
-    let ctx = AppContext {
-        database,
-        storage,
-        scout,
-    };
+    let ctx = AppContext::new(database, storage, scout);
     let cfg = ServerConfig {
         host_addrs: "0.0.0.0:8080",
         use_open_api: true,
