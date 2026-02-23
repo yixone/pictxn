@@ -9,8 +9,8 @@ pub enum AppError {
 
     /// The requested feed is empty or all feeds returned an error
     EmptyFeed,
-    #[display("TOO_BIG_PAGINATION_LIMIT")]
-    TooBigPaginationLimit { received: u32, max: u32 },
+    #[display("INVALID_PAGINATION_LIMIT")]
+    InvalidPaginationLimit { received: u32, max: u32 },
 
     /// Specified entity was not found
     NotFound,

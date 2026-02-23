@@ -14,3 +14,16 @@ pub mod services;
 pub mod storage;
 /// Utilities
 pub mod util;
+
+/// Application context for DI
+#[derive(Clone)]
+pub struct AppContext {
+    /// Database abstraction
+    pub database: database::provider::Database,
+
+    /// File storage abstraction
+    pub storage: storage::provider::FileStorage,
+
+    /// Scout feed service
+    pub scout: scout::service::ScoutService,
+}

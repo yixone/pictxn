@@ -4,14 +4,15 @@ use rand::seq::SliceRandom;
 use tracing::error;
 
 use crate::{
-    result::{Result, errors::AppError},
+    result::Result,
     scout::{channels::base::BaseChannel, content::ScoutContentItem},
 };
 
-const MAX_LIMIT: u32 = 1024;
 pub(super) const CHANNEL_REQUEST_TIMEOUT: u64 = 4;
 
 type AbstractChannel = Arc<dyn BaseChannel>;
+
+#[derive(Clone)]
 pub struct ScoutService {
     channels: Vec<AbstractChannel>,
 }
@@ -24,12 +25,6 @@ impl ScoutService {
 
     /// Get a list of cards from external API
     pub async fn fetch(&self, limit: u32, pid: u32) -> Result<Vec<ScoutContentItem>> {
-        if limit > MAX_LIMIT {
-            return Err(AppError::TooBigPaginationLimit {
-                received: limit,
-                max: MAX_LIMIT,
-            });
-        }
         if limit == 0 || self.channels.is_empty() {
             return Ok(vec![]);
         }
@@ -44,10 +39,6 @@ impl ScoutService {
         let result = futures::future::join_all(futures).await;
 
         let mut items = result.into_iter().flatten().collect::<Vec<_>>();
-
-        if items.is_empty() {
-            return Err(AppError::EmptyFeed);
-        }
 
         items.shuffle(&mut rand::rng());
         items.truncate(limit as usize);
