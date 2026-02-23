@@ -43,6 +43,7 @@ async fn main() -> Result<()> {
     let cfg = ServerConfig {
         host_addrs: "0.0.0.0:8080",
         use_open_api: true,
+        ..Default::default()
     };
 
     // 5. Setting up the server

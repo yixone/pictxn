@@ -1,5 +1,6 @@
 # Builds
 /target
+/data
 
 # System files
 .DS_Store
