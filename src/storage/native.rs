@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{env::temp_dir, path::PathBuf};
 
 use chrono::Utc;
 use futures::StreamExt;
@@ -29,8 +29,21 @@ pub struct NativeFS {
 }
 
 impl NativeFS {
-    pub fn new(root_dir: PathBuf, temp_dir: PathBuf) -> Self {
-        Self { root_dir, temp_dir }
+    pub fn new(root_dir: impl Into<PathBuf>, temp_dir: impl Into<PathBuf>) -> Self {
+        Self {
+            root_dir: root_dir.into(),
+            temp_dir: temp_dir.into(),
+        }
+    }
+
+    pub fn init(&self) -> Result<()> {
+        if let Some(parent) = self.root_dir.parent() {
+            std::fs::create_dir_all(parent)?;
+        }
+        if let Some(parent) = self.temp_dir.parent() {
+            std::fs::create_dir_all(parent)?;
+        }
+        Ok(())
     }
 
     fn real_path_from_key(&self, key: &str) -> PathBuf {

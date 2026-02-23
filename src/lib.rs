@@ -6,6 +6,8 @@ pub mod database;
 pub mod domains;
 /// Result and Error types
 pub mod result;
+/// Backend HTTP endpoints
+pub mod routes;
 /// External APIs content aggregator
 pub mod scout;
 /// Business logic and use cases
@@ -16,14 +18,6 @@ pub mod storage;
 pub mod util;
 
 /// Application context for DI
-#[derive(Clone)]
-pub struct AppContext {
-    /// Database abstraction
-    pub database: database::provider::Database,
-
-    /// File storage abstraction
-    pub storage: storage::provider::FileStorage,
-
-    /// Scout feed service
-    pub scout: scout::service::ScoutService,
-}
+pub mod di;
+/// Backend server assembly and configuration
+pub mod server;

@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use rand::seq::SliceRandom;
+use reqwest::Client;
 use tracing::error;
 
 use crate::{

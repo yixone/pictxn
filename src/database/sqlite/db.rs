@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::PathBuf;
 
 use sqlx::{
     SqlitePool,
@@ -6,7 +6,10 @@ use sqlx::{
     sqlite::{SqliteConnectOptions, SqlitePoolOptions},
 };
 
-use crate::result::Result;
+use crate::{
+    database::ops::AbstractDatabase,
+    result::{Result, errors::AppError},
+};
 
 static MIGRATOR: Migrator = sqlx::migrate!("./migrations");
 
@@ -16,7 +19,8 @@ pub struct SqliteDatabase {
 
 impl SqliteDatabase {
     /// Open database from file
-    pub async fn open_file(path: &Path) -> Result<Self> {
+    pub async fn open_file(path: impl Into<PathBuf>) -> Result<Self> {
+        let path = path.into();
         if !path.exists()
             && let Some(parent) = path.parent()
         {
@@ -32,10 +36,12 @@ impl SqliteDatabase {
     }
 
     /// Apply migrations to the database
-    pub async fn migrate(&self) -> () {
+    pub async fn migrate(&self) -> Result<()> {
         MIGRATOR
             .run(&self.pool)
             .await
-            .expect("Faield to run migrator")
+            .map_err(|e| AppError::from(sqlx::Error::from(e)))
     }
 }
+
+impl AbstractDatabase for SqliteDatabase {}
