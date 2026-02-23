@@ -40,11 +40,15 @@ async fn main() -> Result<()> {
         storage,
         scout,
     };
-    let cfg = ServerConfig { use_open_api: true };
+    let cfg = ServerConfig {
+        host_addrs: "0.0.0.0:8080",
+        use_open_api: true,
+    };
 
     // 5. Setting up the server
-    let server = configure_server(ctx, cfg).await;
+    let server = configure_server(ctx, cfg).await?;
 
     // 6. Start the server
-    todo!()
+    server.await?;
+    Ok(())
 }

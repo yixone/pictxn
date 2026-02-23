@@ -5,6 +5,9 @@ edition = "2024"
 repository = "https://github.com/yixone/pictxn/"
 
 [dependencies]
+# Actix
+actix-web = "4.11.0"
+
 # Async
 async-trait = "0.1.89"
 tokio = { version = "1.47.1", features = [
