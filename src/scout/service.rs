@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use rand::seq::SliceRandom;
-use reqwest::Client;
 use tracing::error;
 
 use crate::{
@@ -31,7 +30,7 @@ impl ScoutService {
         }
 
         let channels_count = self.channels.len() as u32;
-        let limit_per_channel = limit.div_ceil(channels_count).max(1) * 2;
+        let limit_per_channel = limit.div_ceil(channels_count).max(1);
 
         let futures = self
             .channels
