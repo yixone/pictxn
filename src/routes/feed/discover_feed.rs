@@ -12,7 +12,7 @@ pub struct QueryGetDiscoverFeed {
 }
 
 #[get("/discover")]
-pub async fn get_discover_feed(
+pub async fn discover_feed(
     ctx: web::Data<AppContext>,
     params: web::Query<QueryGetDiscoverFeed>,
 ) -> Result<HttpResponse> {
@@ -22,5 +22,6 @@ pub async fn get_discover_feed(
         &ctx.scout,
     )
     .await?;
+
     Ok(HttpResponse::Ok().json(items))
 }

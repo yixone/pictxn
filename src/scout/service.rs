@@ -17,7 +17,6 @@ pub struct ScoutService {
     channels: Vec<AbstractChannel>,
 }
 
-// TODO: add rate limiter
 impl ScoutService {
     pub fn new(channels: Vec<AbstractChannel>) -> ScoutService {
         ScoutService { channels }
