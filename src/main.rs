@@ -1,20 +1,18 @@
-use std::sync::Arc;
-
 use pictxn_backend::{
     database::{provider::Database, sqlite::db::SqliteDatabase},
     di::AppContext,
     result::Result,
-    scout::{channels::safebooru::SafebooruChannel, service::ScoutService},
+    scout::{channels::safebooru::SafebooruChannel, task::ScoutTask},
     server::{ServerConfig, configure_server},
     storage::{native::NativeFS, provider::FileStorage},
+    tasks::host::BackgroundTaskHost,
 };
-use reqwest::Client;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     // 0. Initializing logger
     tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::INFO)
+        .with_max_level(tracing::Level::DEBUG)
         .compact()
         .with_target(false)
         .init();
@@ -29,13 +27,16 @@ async fn main() -> Result<()> {
     fs.init()?;
     let storage = FileStorage::new(fs);
 
-    // 3. Initializing channels for Scout
-    let http_client = Client::new();
-    let safebooru = Arc::new(SafebooruChannel::new(http_client.clone()));
-    let scout = ScoutService::new(vec![safebooru]);
+    // 3. Running background tasks
+    let http_client = reqwest::Client::new();
+    let scout_task =
+        ScoutTask::new(database.clone()).with_channel(SafebooruChannel::new(http_client.clone()));
+
+    let task_host = BackgroundTaskHost::new().with_task(scout_task);
+    task_host.run();
 
     // 4. Collecting the application context and config
-    let ctx = AppContext::new(database, storage, scout);
+    let ctx = AppContext::new(database, storage);
     let cfg = ServerConfig {
         host_addrs: "0.0.0.0:8080",
         use_open_api: true,

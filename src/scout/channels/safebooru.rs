@@ -1,12 +1,14 @@
 use std::time::Duration;
 
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
 use crate::{
     result::Result,
     scout::{
-        channels::base::BaseChannel, content::ScoutContentItem, service::CHANNEL_REQUEST_TIMEOUT,
+        channels::base::BaseChannel,
+        external_content::{id::ExternalContentId, model::ExternalContent},
     },
 };
 
@@ -32,8 +34,8 @@ pub struct SafebooruApiResponse {
     pub sample_url: String,
     pub file_url: String,
     pub hash: String,
-    pub width: usize,
-    pub height: usize,
+    pub width: u32,
+    pub height: u32,
     pub id: i64,
     pub image: String,
     pub owner: String,
@@ -54,7 +56,7 @@ impl SafebooruChannel {
 
 #[async_trait::async_trait]
 impl BaseChannel for SafebooruChannel {
-    async fn fetch(&self, limit: u32, page: u32) -> Result<Vec<ScoutContentItem>> {
+    async fn fetch(&self, limit: u32, page: u32) -> Result<Vec<ExternalContent>> {
         let raw_items = self
             .client
             .get(Self::SOURCE_ENDPOINT)
@@ -66,7 +68,7 @@ impl BaseChannel for SafebooruChannel {
                 limit,
                 page_id: page,
             })
-            .timeout(Duration::from_secs(CHANNEL_REQUEST_TIMEOUT))
+            .timeout(Duration::from_secs(4))
             .send()
             .await?
             .error_for_status()?
@@ -75,16 +77,17 @@ impl BaseChannel for SafebooruChannel {
 
         let items = raw_items
             .into_iter()
-            .map(|item| ScoutContentItem {
-                channel_name: Self::CHANNEL_ID,
+            .map(|item| ExternalContent {
+                id: ExternalContentId::generate(),
+                external_id: item.id.to_string(),
+                created: Utc::now(),
                 title: None,
                 description: None,
-                origin_url: item.source,
                 media_width: Some(item.width),
                 media_height: Some(item.height),
-                file_preview: Some(item.preview_url),
-                file_sample: Some(item.sample_url),
-                file_original: item.file_url,
+                source: item.source.unwrap_or(Self::SOURCE_ENDPOINT.to_string()),
+                file_preview_url: Some(item.preview_url),
+                file_url: item.file_url,
             })
             .collect::<Vec<_>>();
 
