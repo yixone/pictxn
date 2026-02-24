@@ -35,7 +35,7 @@ CREATE TABLE external_content (
   title             VARCHAR(512),
   description       TEXT,
 
-  source_id         UUID          NOT NULL  REFERENCES content_sources(id) ON DELETE CASCADE,
+  source            VARCHAR(512)  NOT NULL,
 
   media_width       INTEGER,
   media_height      INTEGER,
@@ -43,9 +43,9 @@ CREATE TABLE external_content (
   file_preview_url  TEXT,
   file_url          TEXT          NOT NULL,
 
-  UNIQUE(source_id, external_id)
+  UNIQUE(source, external_id)
 );
-CREATE INDEX idx_external_content_source ON external_content(source_id);
+CREATE INDEX idx_external_content_source ON external_content(source);
 CREATE INDEX idx_external_content_created ON external_content(created);
 
 CREATE TABLE content_sources (

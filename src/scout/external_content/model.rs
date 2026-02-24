@@ -19,8 +19,8 @@ pub struct ExternalContent {
     pub title: Option<String>,
     pub description: Option<String>,
 
-    /// Original content source ID
-    pub source_id: ContentSourceId,
+    /// Original content source
+    pub source: String,
 
     /// Image width
     pub media_width: Option<u32>,

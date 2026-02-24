@@ -10,10 +10,10 @@ pub mod result;
 pub mod routes;
 /// External APIs content aggregator
 pub mod scout;
-/// Business logic and use cases
-pub mod services;
 /// File storage services
 pub mod storage;
+/// Background tasks
+pub mod tasks;
 /// Utilities
 pub mod util;
 

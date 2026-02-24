@@ -1,7 +1,7 @@
 use actix_web::{HttpResponse, get, web};
 use serde::Deserialize;
 
-use crate::{di::AppContext, result::Result, services};
+use crate::{di::AppContext, result::Result};
 
 const DEFAULT_LIMIT: u32 = 50;
 
@@ -16,12 +16,5 @@ pub async fn discover_feed(
     ctx: web::Data<AppContext>,
     params: web::Query<QueryGetDiscoverFeed>,
 ) -> Result<HttpResponse> {
-    let items = services::feed::discover_feed(
-        params.pid.unwrap_or(0),
-        params.limit.unwrap_or(DEFAULT_LIMIT),
-        &ctx.scout,
-    )
-    .await?;
-
-    Ok(HttpResponse::Ok().json(items))
+    todo!();
 }

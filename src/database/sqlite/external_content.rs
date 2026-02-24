@@ -18,11 +18,10 @@ impl AbstractExternalContent for SqliteDatabase {
             INSERT OR IGNORE INTO external_content (
                 id, external_id, created,
                 title, description,
-                source_id,
+                source,
                 media_width, media_height,
                 file_preview_url, file_url
-            )
-            VALUES",
+            )",
         );
         qb.push_values(items.iter(), |mut qb, i| {
             qb.push_bind(i.id)
@@ -30,7 +29,7 @@ impl AbstractExternalContent for SqliteDatabase {
                 .push_bind(i.created)
                 .push_bind(&i.title)
                 .push_bind(&i.description)
-                .push_bind(i.source_id)
+                .push_bind(&i.source)
                 .push_bind(i.media_width)
                 .push_bind(i.media_height)
                 .push_bind(&i.file_preview_url)
@@ -52,7 +51,7 @@ impl AbstractExternalContent for SqliteDatabase {
                 SELECT 
                     id, external_id, created,
                     title, description,
-                    source_id,
+                    source,
                     media_width, media_height,
                     file_preview_url, file_url
                 FROM external_content
@@ -72,7 +71,7 @@ impl AbstractExternalContent for SqliteDatabase {
                 SELECT 
                     id, external_id, created,
                     title, description,
-                    source_id,
+                    source,
                     media_width, media_height,
                     file_preview_url, file_url
                 FROM external_content
@@ -119,8 +118,12 @@ impl AbstractExternalContent for SqliteDatabase {
         sqlx::query(
             "
             DELETE FROM external_content
-            WHERE created < ?
-            LIMIT ?
+            WHERE id IN (
+                SELECT id
+                FROM external_content
+                WHERE created < ?
+                LIMIT ?
+            )
             ",
         )
         .bind(date)
