@@ -26,13 +26,11 @@ CREATE TABLE files (
   size          BIGINT        NOT NULL
 );
 
-CREATE TABLE external_contents (
+CREATE TABLE external_content (
   id                UUID          NOT NULL  PRIMARY KEY,
   external_id       VARCHAR(512)  NOT NULL,
 
   created           TIMESTAMPTZ   NOT NULL,
-
-  channel           VARCHAR(128)  NOT NULL,
 
   title             VARCHAR(512),
   description       TEXT,
@@ -45,10 +43,10 @@ CREATE TABLE external_contents (
   file_preview_url  TEXT,
   file_url          TEXT          NOT NULL,
 
-  UNIQUE(channel, external_id)
+  UNIQUE(source_id, external_id)
 );
-CREATE INDEX idx_external_contents_source ON external_contents(channel, source_id);
-CREATE INDEX idx_external_contents_created ON external_contents(created);
+CREATE INDEX idx_external_content_source ON external_content(source_id);
+CREATE INDEX idx_external_content_created ON external_content(created);
 
 CREATE TABLE content_sources (
   id            UUID          NOT NULL PRIMARY KEY,
