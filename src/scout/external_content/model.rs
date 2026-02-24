@@ -9,26 +9,26 @@ use crate::{
 #[derive(Debug, Clone, PartialEq, FromRow)]
 pub struct ExternalContent {
     /// Unique External Content ID
-    id: ExternalContentId,
+    pub id: ExternalContentId,
     /// Content ID from source
-    external_id: String,
+    pub external_id: String,
 
     /// Content loading time into the database
-    created: DateTime<Utc>,
+    pub created: DateTime<Utc>,
 
-    title: Option<String>,
-    description: Option<String>,
+    pub title: Option<String>,
+    pub description: Option<String>,
 
     /// Original content source ID
-    source_id: ContentSourceId,
+    pub source_id: ContentSourceId,
 
     /// Image width
-    media_width: Option<u32>,
+    pub media_width: Option<u32>,
     /// Image height
-    media_height: Option<u32>,
+    pub media_height: Option<u32>,
 
     /// Link to the preview file
-    file_preview_url: Option<String>,
+    pub file_preview_url: Option<String>,
     /// Link to the original file
-    file_url: String,
+    pub file_url: String,
 }

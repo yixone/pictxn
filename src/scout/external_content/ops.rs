@@ -15,7 +15,7 @@ pub trait AbstractExternalContent: Send + Sync {
     -> Result<Option<ExternalContent>>;
 
     /// Get a list of ExternalContent
-    async fn list_external_content(&self) -> Result<Vec<ExternalContent>>;
+    async fn list_external_content(&self, limit: u32, offset: u32) -> Result<Vec<ExternalContent>>;
 
     /// Get the number of records in the external_content table
     async fn count_external_content(&self) -> Result<u32>;
@@ -24,5 +24,5 @@ pub trait AbstractExternalContent: Send + Sync {
     async fn remove_external_content(&self, id: &ExternalContentId) -> Result<()>;
 
     /// Remove ExternalContent older than the specified date
-    async fn remove_old_external_content(&self, date: DateTime<Utc>) -> Result<()>;
+    async fn remove_old_external_content(&self, date: DateTime<Utc>, limit: u32) -> Result<()>;
 }
