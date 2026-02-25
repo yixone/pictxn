@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use chrono::Utc;
+use rand::Rng;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
@@ -9,8 +9,17 @@ use crate::{
     scout::{
         channels::base::BaseChannel,
         external_content::{id::ExternalContentId, model::ExternalContent},
+        task::RANDOM_TTL_OFFSET,
     },
+    util,
 };
+
+/// Maximum page for random pagination
+const MAX_PAGE: u32 = 5000;
+/// Safebooru API Endpoint
+const SOURCE_ENDPOINT: &str = "https://safebooru.org/index.php";
+/// Channel ID
+const CHANNEL_ID: &str = "safebooru";
 
 pub struct SafebooruChannel {
     client: reqwest::Client,
@@ -43,12 +52,6 @@ pub struct SafebooruApiResponse {
 }
 
 impl SafebooruChannel {
-    /// Safebooru API Endpoint
-    const SOURCE_ENDPOINT: &str = "https://safebooru.org/index.php";
-
-    /// Channel ID
-    const CHANNEL_ID: &str = "safebooru";
-
     pub fn new(client: reqwest::Client) -> Self {
         SafebooruChannel { client }
     }
@@ -56,17 +59,19 @@ impl SafebooruChannel {
 
 #[async_trait::async_trait]
 impl BaseChannel for SafebooruChannel {
-    async fn fetch(&self, limit: u32, page: u32) -> Result<Vec<ExternalContent>> {
+    async fn fetch(&self, limit: u32) -> Result<Vec<ExternalContent>> {
+        let page_id = rand::rng().random_range(0..MAX_PAGE);
+
         let raw_items = self
             .client
-            .get(Self::SOURCE_ENDPOINT)
+            .get(SOURCE_ENDPOINT)
             .query(&FetchQueryParams {
                 page: "dapi",
                 s: "post",
                 q: "index",
                 use_json: 1,
                 limit,
-                page_id: page,
+                page_id,
             })
             .timeout(Duration::from_secs(4))
             .send()
@@ -80,18 +85,18 @@ impl BaseChannel for SafebooruChannel {
             .map(|item| ExternalContent {
                 id: ExternalContentId::generate(),
                 external_id: item.id.to_string(),
-                created: Utc::now(),
+                created: util::time::now_with_random_offset(RANDOM_TTL_OFFSET),
                 title: None,
                 description: None,
                 media_width: Some(item.width),
                 media_height: Some(item.height),
-                source: item.source.unwrap_or(Self::SOURCE_ENDPOINT.to_string()),
+                source: item.source.unwrap_or(SOURCE_ENDPOINT.to_string()),
                 file_preview_url: Some(item.preview_url),
                 file_url: item.file_url,
             })
             .collect::<Vec<_>>();
 
-        info!(channel = Self::CHANNEL_ID, count = items.len(), "Fetched");
+        info!(channel = CHANNEL_ID, count = items.len(), "Fetched");
 
         Ok(items)
     }

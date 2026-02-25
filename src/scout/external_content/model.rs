@@ -1,9 +1,7 @@
 use chrono::{DateTime, Utc};
 use sqlx::FromRow;
 
-use crate::{
-    domains::content_sources::id::ContentSourceId, scout::external_content::id::ExternalContentId,
-};
+use crate::scout::external_content::id::ExternalContentId;
 
 /// Content received from external channels in the background
 #[derive(Debug, Clone, PartialEq, FromRow)]

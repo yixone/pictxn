@@ -37,12 +37,8 @@ impl NativeFS {
     }
 
     pub fn init(&self) -> Result<()> {
-        if let Some(parent) = self.root_dir.parent() {
-            std::fs::create_dir_all(parent)?;
-        }
-        if let Some(parent) = self.temp_dir.parent() {
-            std::fs::create_dir_all(parent)?;
-        }
+        std::fs::create_dir_all(&self.root_dir)?;
+        std::fs::create_dir_all(&self.temp_dir)?;
         Ok(())
     }
 

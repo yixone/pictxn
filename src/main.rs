@@ -12,7 +12,7 @@ use pictxn_backend::{
 async fn main() -> Result<()> {
     // 0. Initializing logger
     tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::DEBUG)
+        .with_max_level(tracing::Level::INFO)
         .compact()
         .with_target(false)
         .init();
@@ -20,7 +20,7 @@ async fn main() -> Result<()> {
     // 1. Initializing the database
     let sqlite = SqliteDatabase::open_file("./data/app.db").await?;
     sqlite.migrate().await?;
-    let database = Database::new(sqlite);
+    let db = Database::new(sqlite);
 
     // 2. Initializing file storage
     let fs = NativeFS::new("./data/media", "./data/temp");
@@ -30,17 +30,17 @@ async fn main() -> Result<()> {
     // 3. Running background tasks
     let http_client = reqwest::Client::new();
     let scout_task =
-        ScoutTask::new(database.clone()).with_channel(SafebooruChannel::new(http_client.clone()));
+        ScoutTask::new(db.clone()).with_channel(SafebooruChannel::new(http_client.clone()));
 
     let task_host = BackgroundTaskHost::new().with_task(scout_task);
     task_host.run();
 
     // 4. Collecting the application context and config
-    let ctx = AppContext::new(database, storage);
+    let ctx = AppContext::new(db, storage);
     let cfg = ServerConfig {
         host_addrs: "0.0.0.0:8080",
         use_open_api: true,
-        ..Default::default()
+        ..ServerConfig::default()
     };
 
     // 5. Setting up the server

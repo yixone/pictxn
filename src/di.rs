@@ -9,8 +9,8 @@ pub struct AppContext {
 }
 
 impl AppContext {
-    pub fn new(database: Database, storage: FileStorage) -> Self {
-        let inner = ContextInner { database, storage };
+    pub fn new(db: Database, storage: FileStorage) -> Self {
+        let inner = ContextInner { db, storage };
         AppContext {
             inner: Arc::new(inner),
         }
@@ -26,8 +26,8 @@ impl Deref for AppContext {
 }
 
 pub struct ContextInner {
-    /// Database abstraction
-    pub database: Database,
+    /// Main database
+    pub db: Database,
 
     /// File storage abstraction
     pub storage: FileStorage,

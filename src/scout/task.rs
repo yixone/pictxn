@@ -11,10 +11,18 @@ use crate::{
     tasks::task::BackgroundTask,
 };
 
-const TARGET_CONTENT: u32 = 50;
-const MIN_CONTENT: u32 = 15;
-const MAX_BATCH_SIZE: u32 = 100;
-const EXTERNAL_CONTENT_TTL: i64 = 5 * 60 * 60;
+/// Target number of cards in the pool
+const TARGET_CONTENT: u32 = 500;
+/// Minimum number of cards allowed in a pool
+const MIN_CONTENT: u32 = 350;
+/// Maximum number of cards per request
+const MAX_BATCH_SIZE: u32 = MIN_CONTENT / 10;
+/// The time (in sec) after which old cards will be deleted
+const EXTERNAL_CONTENT_TTL: i64 = 45 * 60;
+/// Random time deviation to remove full pool flushes and randomize refreshes
+pub(super) const RANDOM_TTL_OFFSET: i64 = EXTERNAL_CONTENT_TTL / 4;
+/// Time (in sec) between service cycles
+const CYCLE_COOLDOWN: u64 = 25;
 
 #[derive(Clone)]
 pub struct ScoutTask {
@@ -46,17 +54,16 @@ impl ScoutTask {
         let channels_count = self.channels.len() as u32;
         let limit_per_channel = limit.div_ceil(channels_count).max(1);
 
-        // TODO: remove PID param from scout service
-        let futures =
-            self.channels
-                .iter()
-                .map(async |c| match c.fetch(limit_per_channel, 1).await {
-                    Ok(i) => i,
-                    Err(e) => {
-                        error!(err = ?e, "Scout Provider error");
-                        Vec::new()
-                    }
-                });
+        let futures = self
+            .channels
+            .iter()
+            .map(async |c| match c.fetch(limit_per_channel).await {
+                Ok(i) => i,
+                Err(e) => {
+                    error!(err = ?e, "Scout Provider error");
+                    Vec::new()
+                }
+            });
         let res = futures::future::join_all(futures).await;
         let mut items = res.into_iter().flatten().collect::<Vec<_>>();
 
@@ -76,22 +83,22 @@ impl ScoutTask {
     }
 
     pub async fn execute(&self) -> Result<()> {
-        debug!("Scout cycle started!");
+        info!("Scout cycle started!");
         let cycle_start_time = Instant::now();
 
         self.try_remove_old_content().await?;
 
         let content_count = self.db.count_external_content().await?;
-        debug!(count = content_count, "ExternalContentPool contains");
+        info!(count = content_count, "ExternalContentPool contains");
 
         if content_count > MIN_CONTENT {
-            tracing::debug!("The ScoutTask cycle was skipped because the number goal was reached");
+            info!("The ScoutTask cycle was skipped because the number goal was reached");
             return Ok(());
         }
 
         let d_count = (TARGET_CONTENT - content_count).min(MAX_BATCH_SIZE);
         info!(
-            count = d_count,
+            count = TARGET_CONTENT - d_count,
             "The External Content pool is missing items"
         );
 
@@ -103,7 +110,7 @@ impl ScoutTask {
         );
         self.db.insert_external_content_many(&items).await?;
 
-        debug!(
+        info!(
             cycle_duration_ms = cycle_start_time.elapsed().as_millis(),
             "Scout cycle finished!"
         );
@@ -119,7 +126,7 @@ impl BackgroundTask for ScoutTask {
                 error!(err = ?e, "An error occurred with ScoutTask");
             }
 
-            tokio::time::sleep(tokio::time::Duration::from_secs(30)).await;
+            tokio::time::sleep(tokio::time::Duration::from_secs(CYCLE_COOLDOWN)).await;
         }
     }
 }
