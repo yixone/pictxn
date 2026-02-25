@@ -6,11 +6,7 @@ use tracing::info;
 
 use crate::{
     result::Result,
-    scout::{
-        channels::base::BaseChannel,
-        external_content::{id::ExternalContentId, model::ExternalContent},
-        task::RANDOM_TTL_OFFSET,
-    },
+    scout::{channels::base::BaseChannel, external_content::model::ExternalContent},
     util,
 };
 
@@ -21,6 +17,7 @@ const SOURCE_ENDPOINT: &str = "https://safebooru.org/index.php";
 /// Channel ID
 const CHANNEL_ID: &str = "safebooru";
 
+#[derive(Debug)]
 pub struct SafebooruChannel {
     client: reqwest::Client,
 }
@@ -83,9 +80,7 @@ impl BaseChannel for SafebooruChannel {
         let items = raw_items
             .into_iter()
             .map(|item| ExternalContent {
-                id: ExternalContentId::generate(),
                 external_id: item.id.to_string(),
-                created: util::time::now_with_random_offset(RANDOM_TTL_OFFSET),
                 title: None,
                 description: None,
                 media_width: Some(item.width),

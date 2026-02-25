@@ -1,11 +1,12 @@
+use std::sync::Arc;
+
 use pictxn_backend::{
     database::{provider::Database, sqlite::db::SqliteDatabase},
     di::AppContext,
     result::Result,
-    scout::{channels::safebooru::SafebooruChannel, task::ScoutTask},
+    scout::{channels::safebooru::SafebooruChannel, service::Scout},
     server::{ServerConfig, configure_server},
     storage::{native::NativeFS, provider::FileStorage},
-    tasks::host::BackgroundTaskHost,
 };
 
 #[tokio::main]
@@ -27,16 +28,14 @@ async fn main() -> Result<()> {
     fs.init()?;
     let storage = FileStorage::new(fs);
 
-    // 3. Running background tasks
+    // 3. Initializing scout
     let http_client = reqwest::Client::new();
-    let scout_task =
-        ScoutTask::new(db.clone()).with_channel(SafebooruChannel::new(http_client.clone()));
-
-    let task_host = BackgroundTaskHost::new().with_task(scout_task);
-    task_host.run();
+    let safebooru_channel = SafebooruChannel::new(http_client.clone());
+    let scout = Arc::new(Scout::new(100, 70, 20, 10).with_channel(safebooru_channel));
+    scout.init().await;
 
     // 4. Collecting the application context and config
-    let ctx = AppContext::new(db, storage);
+    let ctx = AppContext::new(db, storage, scout);
     let cfg = ServerConfig {
         host_addrs: "0.0.0.0:8080",
         use_open_api: true,

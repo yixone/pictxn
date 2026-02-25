@@ -1,6 +1,6 @@
 use std::{ops::Deref, sync::Arc};
 
-use crate::{database::provider::Database, storage::provider::FileStorage};
+use crate::{database::provider::Database, scout::service::Scout, storage::provider::FileStorage};
 
 /// Application context for DI
 #[derive(Clone)]
@@ -9,8 +9,8 @@ pub struct AppContext {
 }
 
 impl AppContext {
-    pub fn new(db: Database, storage: FileStorage) -> Self {
-        let inner = ContextInner { db, storage };
+    pub fn new(db: Database, storage: FileStorage, scout: Arc<Scout>) -> Self {
+        let inner = ContextInner { db, storage, scout };
         AppContext {
             inner: Arc::new(inner),
         }
@@ -31,4 +31,7 @@ pub struct ContextInner {
 
     /// File storage abstraction
     pub storage: FileStorage,
+
+    /// Scout service
+    pub scout: Arc<Scout>,
 }
