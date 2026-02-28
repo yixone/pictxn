@@ -10,6 +10,7 @@ repository = "https://github.com/yixone/pictxn/"
 [workspace.dependencies]
 # Actix
 actix-web = "4.11.0"
+actix-cors = "0.7.1"
 
 # Async
 async-trait = "0.1.89"

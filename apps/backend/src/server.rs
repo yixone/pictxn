@@ -1,3 +1,4 @@
+use actix_cors::Cors;
 use actix_web::{App, HttpServer, dev::Server, web};
 
 use crate::{di::AppContext, result::Result, routes};
@@ -7,6 +8,7 @@ pub async fn configure_server(ctx: AppContext, cfg: ServerConfig) -> Result<Serv
 
     let server = HttpServer::new(move || {
         App::new()
+            .wrap(Cors::permissive())
             .configure(|cfg| {
                 // Base routes
                 cfg.configure(routes::feed::configure);
