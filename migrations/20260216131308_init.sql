@@ -26,28 +26,6 @@ CREATE TABLE files (
   size          BIGINT        NOT NULL
 );
 
-CREATE TABLE external_content (
-  id                UUID          NOT NULL  PRIMARY KEY,
-  external_id       VARCHAR(512)  NOT NULL,
-
-  created           TIMESTAMPTZ   NOT NULL,
-
-  title             VARCHAR(512),
-  description       TEXT,
-
-  source            VARCHAR(512)  NOT NULL,
-
-  media_width       INTEGER,
-  media_height      INTEGER,
-
-  file_preview_url  TEXT,
-  file_url          TEXT          NOT NULL,
-
-  UNIQUE(source, external_id)
-);
-CREATE INDEX idx_external_content_source ON external_content(source);
-CREATE INDEX idx_external_content_created ON external_content(created);
-
 CREATE TABLE content_sources (
   id            UUID          NOT NULL PRIMARY KEY,
   source_domain VARCHAR(512)  NOT NULL UNIQUE

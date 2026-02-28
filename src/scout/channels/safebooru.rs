@@ -6,12 +6,7 @@ use tracing::info;
 
 use crate::{
     result::Result,
-    scout::{
-        channels::base::BaseChannel,
-        external_content::{id::ExternalContentId, model::ExternalContent},
-        task::RANDOM_TTL_OFFSET,
-    },
-    util,
+    scout::{channels::ops::AbstractChannel, model::ScoutCard},
 };
 
 /// Maximum page for random pagination
@@ -21,6 +16,7 @@ const SOURCE_ENDPOINT: &str = "https://safebooru.org/index.php";
 /// Channel ID
 const CHANNEL_ID: &str = "safebooru";
 
+#[derive(Debug)]
 pub struct SafebooruChannel {
     client: reqwest::Client,
 }
@@ -42,12 +38,10 @@ pub struct SafebooruApiResponse {
     pub preview_url: String,
     pub sample_url: String,
     pub file_url: String,
-    pub hash: String,
     pub width: u32,
     pub height: u32,
     pub id: i64,
     pub image: String,
-    pub owner: String,
     pub source: Option<String>,
 }
 
@@ -58,8 +52,8 @@ impl SafebooruChannel {
 }
 
 #[async_trait::async_trait]
-impl BaseChannel for SafebooruChannel {
-    async fn fetch(&self, limit: u32) -> Result<Vec<ExternalContent>> {
+impl AbstractChannel for SafebooruChannel {
+    async fn fetch(&self, limit: u32) -> Result<Vec<ScoutCard>> {
         let page_id = rand::rng().random_range(0..MAX_PAGE);
 
         let raw_items = self
@@ -82,16 +76,9 @@ impl BaseChannel for SafebooruChannel {
 
         let items = raw_items
             .into_iter()
-            .map(|item| ExternalContent {
-                id: ExternalContentId::generate(),
-                external_id: item.id.to_string(),
-                created: util::time::now_with_random_offset(RANDOM_TTL_OFFSET),
-                title: None,
-                description: None,
-                media_width: Some(item.width),
-                media_height: Some(item.height),
-                source: item.source.unwrap_or(SOURCE_ENDPOINT.to_string()),
-                file_preview_url: Some(item.preview_url),
+            .map(|item| ScoutCard {
+                source: item.source,
+                preview_url: Some(item.preview_url),
                 file_url: item.file_url,
             })
             .collect::<Vec<_>>();
