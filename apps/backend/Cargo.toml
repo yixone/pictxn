@@ -1,0 +1,47 @@
+[package]
+name = "pictxn-backend"
+version = "0.1.0"
+edition.workspace = true
+repository.workspace = true
+
+[dependencies]
+# Actix
+actix-web.workspace = true
+
+# Async
+async-trait.workspace = true
+tokio = { workspace = true, features = [
+  "rt-multi-thread",
+  "macros",
+  "fs",
+  "io-util",
+] }
+tokio-util.workspace = true
+futures.workspace = true
+
+# HttpClient
+reqwest = { workspace = true, features = ["json", "query", "stream"] }
+
+# Serde
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+
+# DB
+sqlx = { workspace = true, features = [
+  "uuid",
+  "chrono",
+  "sqlite",
+  "runtime-tokio",
+] }
+
+# Utils
+uuid = { workspace = true, features = ["serde", "v4"] }
+chrono = { workspace = true, features = ["serde"] }
+derive_more = { workspace = true, features = ["from", "display"] }
+rand.workspace = true
+hex.workspace = true
+sha2.workspace = true
+
+# Tracing
+tracing-subscriber.workspace = true
+tracing.workspace = true

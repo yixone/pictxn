@@ -11,7 +11,7 @@ use crate::{
     result::{Result, errors::AppError},
 };
 
-static MIGRATOR: Migrator = sqlx::migrate!("./migrations");
+static MIGRATOR: Migrator = sqlx::migrate!("../../migrations");
 
 pub struct SqliteDatabase {
     pub(super) pool: SqlitePool,
