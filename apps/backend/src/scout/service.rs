@@ -201,7 +201,7 @@ impl Scout {
 
         self.check_refill().await;
 
-        self.move_head(self.batch_size);
+        // self.move_head(self.batch_size);
         self.update_next_batch().await;
 
         current_batch

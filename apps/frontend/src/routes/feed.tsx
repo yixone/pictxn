@@ -1,7 +1,25 @@
+import { useEffect, useState } from "react"
+import type { ExternalCardData } from "../models"
+import ExternalCard from "../components/external_card"
+import getDiscoverFeedBatch from "../api/feed/discover"
+
 function Feed() {
+	const [cards, setCards] = useState<ExternalCardData[]>([])
+
+	useEffect(() => {
+		const getCards = async () => {
+			const cards = await getDiscoverFeedBatch()
+			setCards(cards)
+		}
+
+		getCards()
+	}, [])
+
 	return (
 		<div>
-			<h2>Hello from feed!</h2>
+			{cards.map((c) => (
+				<ExternalCard data={c} />
+			))}
 		</div>
 	)
 }

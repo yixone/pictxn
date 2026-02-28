@@ -31,7 +31,7 @@ async fn main() -> Result<()> {
 
     // 3. Initializing scout
     let safebooru = SafebooruChannel::new(Client::new());
-    let scout = Arc::new(Scout::new(10, 4, 2).with_channel(safebooru));
+    let scout = Arc::new(Scout::new(6, 3, 2).with_channel(safebooru));
     scout.init().await;
 
     // 4. Collecting the application context and config
