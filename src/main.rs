@@ -8,6 +8,7 @@ use pictxn_backend::{
     server::{ServerConfig, configure_server},
     storage::{native::NativeFS, provider::FileStorage},
 };
+use reqwest::Client;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -29,9 +30,8 @@ async fn main() -> Result<()> {
     let storage = FileStorage::new(fs);
 
     // 3. Initializing scout
-    let http_client = reqwest::Client::new();
-    let safebooru_channel = SafebooruChannel::new(http_client.clone());
-    let scout = Arc::new(Scout::new(100, 70, 20, 10).with_channel(safebooru_channel));
+    let safebooru = SafebooruChannel::new(Client::new());
+    let scout = Arc::new(Scout::new(10, 4, 2).with_channel(safebooru));
     scout.init().await;
 
     // 4. Collecting the application context and config

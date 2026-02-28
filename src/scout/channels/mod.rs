@@ -1,3 +1,3 @@
-pub mod base;
+pub mod ops;
 
 pub mod safebooru;

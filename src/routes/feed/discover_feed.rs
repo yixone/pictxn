@@ -5,7 +5,7 @@ use crate::{di::AppContext, result::Result};
 
 #[derive(Deserialize)]
 pub struct QueryGetDiscoverFeed {
-    cursor: Option<u32>,
+    // cursor: Option<u32>,
 }
 
 #[get("/discover")]
@@ -14,8 +14,7 @@ pub async fn discover_feed(
     params: web::Query<QueryGetDiscoverFeed>,
 ) -> Result<HttpResponse> {
     let scout = &ctx.scout;
-    let cursor = params.cursor.unwrap_or_default();
 
-    let feed_slice = scout.pull(cursor as usize).await;
+    let feed_slice = scout.next().await;
     Ok(HttpResponse::Ok().json(feed_slice))
 }
