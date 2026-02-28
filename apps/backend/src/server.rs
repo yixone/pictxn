@@ -3,33 +3,6 @@ use actix_web::{App, HttpServer, dev::Server, web};
 
 use crate::{di::AppContext, result::Result, routes};
 
-pub async fn configure_server(ctx: AppContext, cfg: ServerConfig) -> Result<Server> {
-    let use_open_api = cfg.use_open_api;
-
-    let server = HttpServer::new(move || {
-        App::new()
-            .wrap(Cors::permissive())
-            .configure(|cfg| {
-                // Base routes
-                cfg.configure(routes::feed::configure);
-
-                // System routes
-                // TODO!
-
-                // OpenApi routes
-                if use_open_api {
-                    // TODO!
-                }
-            })
-            .app_data(web::Data::new(ctx.clone()))
-    })
-    .workers(cfg.workers_count)
-    .bind(cfg.host_addrs)?
-    .run();
-
-    Ok(server)
-}
-
 /// Server config
 pub struct ServerConfig {
     /// Server listen address
@@ -48,4 +21,18 @@ impl Default for ServerConfig {
             workers_count: 6,
         }
     }
+}
+
+pub async fn configure_server(ctx: AppContext, cfg: ServerConfig) -> Result<Server> {
+    let server = HttpServer::new(move || {
+        App::new()
+            .wrap(Cors::permissive())
+            .service(web::scope("/api").configure(routes::feed::configure))
+            .app_data(web::Data::new(ctx.clone()))
+    })
+    .workers(cfg.workers_count)
+    .bind(cfg.host_addrs)?
+    .run();
+
+    Ok(server)
 }

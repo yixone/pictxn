@@ -1,4 +1,16 @@
 import { createRoot } from "react-dom/client"
 import "./index.css"
+import { Feed } from "./routes"
+import { BrowserRouter, Route, Routes } from "react-router"
 
-createRoot(document.getElementById("root")!).render(<h1>Test</h1>)
+function App() {
+	return (
+		<BrowserRouter>
+			<Routes>
+				<Route path="/feed" element={<Feed />} />
+			</Routes>
+		</BrowserRouter>
+	)
+}
+
+createRoot(document.getElementById("root")!).render(<App />)
