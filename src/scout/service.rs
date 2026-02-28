@@ -65,6 +65,13 @@ impl Scout {
         if self.watermark > self.target || self.watermark <= self.batch_size {
             panic!("watermark must be in the range from batch_size to target");
         }
+
+        info!(
+            channels_count = self.channels.len(),
+            pool_size = self.target,
+            batch_size = self.batch_size,
+            "scout initialized"
+        );
     }
 
     async fn refill(&self, count: usize) {
@@ -133,6 +140,10 @@ impl Scout {
         if pool_len <= self.batch_size {
             self.refill(self.target - pool_len).await;
             self.update_next_batch().await;
+            info!(
+                refilling = self.target - pool_len,
+                "scout pool is less than batch_size"
+            );
         }
     }
 
@@ -147,8 +158,7 @@ impl Scout {
                 let notify = notify.clone();
                 drop(state);
 
-                info!(reason = "already refilling", "scout.refill - cancelling");
-
+                info!(reason = "already refilling", "scout refill cancelling");
                 notify.notified().await;
                 return;
             }
@@ -158,6 +168,11 @@ impl Scout {
         if remaining <= self.batch_size {
             let removed = self.pool.trim(l_head + self.batch_size).await;
 
+            info!(
+                refill_count = removed,
+                reason = "critical watermark reached",
+                "scout refill calling"
+            );
             self.move_global_head(removed);
             self.refill(removed).await;
         } else if remaining <= self.watermark {
@@ -165,6 +180,11 @@ impl Scout {
             tokio::spawn(async move {
                 let removed = this.pool.trim(l_head + this.batch_size).await;
 
+                info!(
+                    refill_count = removed,
+                    reason = "low watermark reached",
+                    "scout refill calling"
+                );
                 this.move_global_head(removed);
                 this.refill(removed).await;
             });
@@ -173,6 +193,7 @@ impl Scout {
 
     pub async fn next(self: &Arc<Self>) -> Arc<[Arc<ScoutCard>]> {
         let _guard = self.next_guard.lock().await;
+        info!("scout.next - called");
 
         self.exclude_empty_pool().await;
 
